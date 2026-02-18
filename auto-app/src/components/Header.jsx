@@ -1,8 +1,11 @@
 import "../Styles/Header.scss";
+import "../Styles/App.scss";
+import { useState } from "react";
 export default function Header() {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
-      <div className="container-fluid">
+    <nav className="navbar navbar-expand-lg fixed-top">
+      <div className="container-xl">
         <a className="navbar-brand" href="#">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -24,7 +27,19 @@ export default function Header() {
           </svg>{" "}
           Clario
         </a>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <button
+          className={`navbar-toggler border-0 shadow-none ${isOpen ? "open" : ""}`}
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span className="toggler-icon top-bar"></span>
+          <span className="toggler-icon middle-bar"></span>
+          <span className="toggler-icon bottom-bar"></span>
+        </button>
+        <div
+          className={`navbar-collapse ${isOpen ? "show" : ""}`}
+          id="navbarNav"
+        >
           <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <a className="nav-link active" aria-current="page" href="#">
@@ -47,42 +62,67 @@ export default function Header() {
               </a>
             </li>
           </ul>
-          <form className="d-flex" role="search">
-            <button className="btn login-btn rounded-pill me-2">
-              Login In{" "}
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 28"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6 18L18 6M18 6H10M18 6V14"
+          <form className="d-flex gap-2" role="search">
+            <button className="btn btn-info rounded-pill">
+              Login In
+              <span className="arrow-box">
+                {/* FIRST ARROW */}
+                <svg
+                  className="arrow first"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+                  strokeWidth="2"
+                >
+                  <path d="M7 17L17 7M17 7H8M17 7V16" />
+                </svg>
+
+                {/* SECOND ARROW */}
+                <svg
+                  className="arrow second"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M7 17L17 7M17 7H8M17 7V16" />
+                </svg>
+              </span>
             </button>
-            <button className="btn start-btn rounded-pill">
-              Get Started{" "}
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 28"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6 18L18 6M18 6H10M18 6V14"
+
+            <button className="btn btn-success rounded-pill">
+              Get Started
+              <span className="arrow-box">
+                {/* FIRST ARROW */}
+                <svg
+                  className="arrow first"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+                  strokeWidth="2"
+                >
+                  <path d="M7 17L17 7M17 7H8M17 7V16" />
+                </svg>
+
+                {/* SECOND ARROW */}
+                <svg
+                  className="arrow second"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M7 17L17 7M17 7H8M17 7V16" />
+                </svg>
+              </span>
             </button>
           </form>
         </div>
