@@ -34,7 +34,7 @@ body {
 .hero-title {
   color: white;
   font-family: 'Lexend-ExtraLight', sans-serif;
-  font-weight: bolder !important;
+  font-weight: 500 !important;
   text-align: center;
   font-size: 60px;
   width: 65%;
@@ -109,11 +109,6 @@ body {
   margin-top: 50px;
   margin-bottom: 50px;
   border-radius: 20px;
-  .hero-button {
-    box-shadow: 1px 1px 160px 16px $main_color;
-    height: 100px;
-    width: 200px;
-  }
 }
 .image {
   position: absolute;
@@ -157,7 +152,7 @@ body {
     color: white;
     font-family: 'Lexend-ExtraLight', sans-serif;
     font-weight: normal;
-    font-weight: bolder;
+    font-weight: 500 !important;
     font-size: 40px;
     text-wrap: auto !important;
     text-align: center;
@@ -279,7 +274,7 @@ body {
     color: white;
     font-family: 'Lexend-ExtraLight', sans-serif;
     font-weight: normal;
-    font-weight: bolder;
+    font-weight: 500 !important;
     font-size: 50px;
     text-wrap: auto !important;
     text-align: center;

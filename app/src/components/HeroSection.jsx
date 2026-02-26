@@ -3,6 +3,7 @@ import '../Styles/App.scss';
 import { gsap } from 'gsap';
 import { useRef, useEffect } from 'react';
 import { ScrollTrigger } from 'gsap/all';
+gsap.registerPlugin(ScrollTrigger);
 export default function HeroSection() {
   const badge = useRef(null);
   const title = useRef(null);
@@ -10,30 +11,32 @@ export default function HeroSection() {
   const btnStart = useRef(null);
   const img = useRef(null);
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.fromTo(
-      img.current,
-      { scale: 0.8, y: 100, opacity: 0.7 }, // start smaller & lower
-      {
-        scale: 1, // final normal size
-        y: 0, // move to normal position
-        opacity: 1, // fully visible
-        scrollTrigger: {
-          trigger: img.current,
-          start: 'top 80%', // when image top is 80% from top of viewport
-          end: 'top 20%', // until image top is near top of viewport
-          scrub: true, // smooth tie to scroll
+    const ctx = gsap.context(() => {
+      // Add perspective dynamically (no CSS file needed)
+      gsap.set(img.current.parentElement, {
+        perspective: 1400,
+      });
+
+      gsap.fromTo(
+        img.current,
+        {
+          rotationX: 50, // top back / bottom front
+          transformOrigin: 'center center',
         },
-      },
-    );
-    let tl = gsap.timeline({
-      defaults: { duration: 1.5, ease: 'power1.inout' },
+        {
+          rotationX: 0, // return to normal flat
+          ease: 'none', // required for smooth scrub
+          scrollTrigger: {
+            trigger: img.current,
+            start: 'top 85%',
+            end: 'top 40%',
+            scrub: 1.5, // smooth cinematic scroll
+          },
+        },
+      );
     });
-    tl.from(badge.current, { y: 40, opacity: 0 }, 0)
-      .from(title.current, { y: 40, opacity: 0 }, 0)
-      .from(subtitle.current, { y: 40, opacity: 0 }, 0)
-      .from(btnStart.current, { y: 40, opacity: 0 }, 0);
-    return () => tl.revert();
+
+    return () => ctx.revert();
   }, []);
   return (
     <div className="container-md heroSection">
