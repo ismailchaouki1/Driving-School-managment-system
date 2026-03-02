@@ -8,9 +8,10 @@ import step3 from '../assets/images/3.png';
 import step4 from '../assets/images/4.png';
 import step5 from '../assets/images/5.png';
 import step6 from '../assets/images/6.png';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Video from './video';
 gsap.registerPlugin(ScrollTrigger);
 export default function HowItWorks() {
   const container = useRef(null);
@@ -22,7 +23,7 @@ export default function HowItWorks() {
   const step4ref = useRef(null);
   const step5ref = useRef(null);
   const step6ref = useRef(null);
-
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -108,12 +109,13 @@ export default function HowItWorks() {
   return (
     <div className="container-md howItWorks" ref={container}>
       <div className="video" ref={video}>
-        <FontAwesomeIcon icon={faCirclePlay} className="play" />
+        <FontAwesomeIcon icon={faCirclePlay} className="play" onClick={() => setOpen(true)} />
         <span style={{ color: '#8cff2e' }}>Watch Video</span>
       </div>
       <h1 className="title" ref={title}>
         How Clario works
       </h1>
+      <Video opened={open} onClose={() => setOpen(false)} />
       <div className="steps ">
         {steps.map((s) => (
           <div class="card" key={s.id} ref={s.ref}>

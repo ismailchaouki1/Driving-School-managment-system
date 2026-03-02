@@ -12,7 +12,40 @@ export default function HeroSection() {
   const img = useRef(null);
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Add perspective dynamically (no CSS file needed)
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      tl.from(badge.current, {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+      })
+        .from(
+          title.current,
+          {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+          },
+          '-=0.4',
+        )
+        .from(
+          subtitle.current,
+          {
+            y: 40,
+            opacity: 0,
+            duration: 0.8,
+          },
+          '-=0.6',
+        )
+        .from(
+          btnStart.current,
+          {
+            y: 30,
+            opacity: 0,
+            duration: 0.6,
+          },
+          '-=0.6',
+        );
       gsap.set(img.current.parentElement, {
         perspective: 1400,
       });
@@ -20,17 +53,17 @@ export default function HeroSection() {
       gsap.fromTo(
         img.current,
         {
-          rotationX: 50, // top back / bottom front
+          rotationX: 50,
           transformOrigin: 'center center',
         },
         {
-          rotationX: 0, // return to normal flat
-          ease: 'none', // required for smooth scrub
+          rotationX: 0,
+          ease: 'none',
           scrollTrigger: {
             trigger: img.current,
             start: 'top 85%',
             end: 'top 40%',
-            scrub: 1.5, // smooth cinematic scroll
+            scrub: 1.5,
           },
         },
       );
@@ -81,7 +114,7 @@ export default function HeroSection() {
           </svg>
         </span>
       </button>
-      <div class="hero-image" ref={img}>
+      <div className="hero-image" ref={img}>
         <div className="image"></div>
       </div>
     </div>

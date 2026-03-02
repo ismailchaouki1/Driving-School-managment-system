@@ -7,6 +7,11 @@ $background: #050505;
 body {
   overflow: auto;
 }
+body::selection {
+  background-color: #8cff2e1e;
+  color: $main_color;
+}
+
 @font-face {
   font-family: 'Lexend';
   src:

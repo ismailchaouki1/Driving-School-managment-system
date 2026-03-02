@@ -7,6 +7,7 @@ import '../Styles/Home.scss';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import HowItWorks from '../components/HowitWorks';
+import Why from '../components/WhySection';
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
@@ -38,6 +39,9 @@ export default function HomePage() {
 
           <section className="container-xl">
             <HowItWorks />
+          </section>
+          <section className="container-xl">
+            <Why />
           </section>
         </div>
       </div>

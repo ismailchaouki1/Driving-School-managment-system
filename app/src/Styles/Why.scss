@@ -1,0 +1,175 @@
+$main_color: #8cff2e;
+$text_color: white;
+$second_color: #111010bb;
+$background: #050505;
+.why {
+  height: auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+}
+.title-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $main_color;
+  margin-top: 15%;
+  margin-bottom: 20px;
+  font-family: 'Lexend-Regular', sans-serif;
+}
+.title-why {
+  font-size: 50px;
+  font-family: 'Lexend-ExtraLight', sans-serif;
+  margin-bottom: 20px;
+  color: white;
+  width: 70%;
+  text-align: center;
+}
+.comparison {
+  height: auto;
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: row;
+  background-color: #171616;
+  border-radius: 36px;
+  padding: 22px;
+  background-color: $second_color;
+  color: white;
+  margin-top: 20px;
+  margin-bottom: 80px;
+  .other-tools {
+    width: 60%;
+    height: 100%;
+    background-color: $second_color;
+    border-radius: 4%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 15px;
+    span {
+      color: #8e8e8e;
+      font-family: 'Lexend-Regular', sans-serif;
+    }
+    h4 {
+      font-family: 'Lexend-Regular', sans-serif;
+    }
+  }
+  .clario {
+    width: 60%;
+    height: 100%;
+    background-color: black;
+    border-radius: 36px;
+    box-shadow: 1px 1px 5px -1px $main_color;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 15px;
+    padding: 30px;
+    .logo-compare {
+      font-size: 30px;
+    }
+    span {
+      color: #8e8e8e;
+      font-family: 'Lexend-Regular', sans-serif;
+    }
+    h4 {
+      font-family: 'Lexend-Regular', sans-serif;
+    }
+  }
+}
+
+//mobile screen
+@media (max-width: 991.98px) {
+  .why {
+    height: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .title-badge {
+    width: fit-content;
+    height: 30px;
+    padding: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $main_color;
+    background-color: black;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px -1px $main_color;
+    margin-top: 15%;
+    margin-bottom: 20px;
+    font-family: 'Lexend-Regular', sans-serif;
+  }
+  .title-why {
+    font-size: 30px;
+    font-family: 'Lexend-ExtraLight', sans-serif;
+    margin-bottom: 20px;
+    color: white;
+    width: 90%;
+    text-align: center;
+  }
+  .comparison {
+    height: auto;
+    width: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: row;
+    background-color: #171616;
+    border-radius: 4%;
+    padding: 22px;
+    background-color: $second_color;
+    color: white;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    .other-tools {
+      width: 60%;
+      height: auto;
+      background-color: $second_color;
+      border-radius: 4%;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      gap: 15px;
+      span {
+        color: #8e8e8e;
+        font-family: 'Lexend-Regular', sans-serif;
+      }
+      h4 {
+        font-family: 'Lexend-Regular', sans-serif;
+      }
+    }
+    .clario {
+      width: 60%;
+      height: auto;
+      background-color: black;
+      border-radius: 10%;
+      box-shadow: 1px 1px 5px -1px $main_color;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      gap: 15px;
+      padding: 20px;
+      .logo-compare {
+        font-size: 30px;
+      }
+      span {
+        color: #8e8e8e;
+        font-family: 'Lexend-Regular', sans-serif;
+      }
+      h4 {
+        font-family: 'Lexend-Regular', sans-serif;
+      }
+    }
+  }
+}
