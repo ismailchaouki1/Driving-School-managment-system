@@ -29,21 +29,22 @@ $background: #050505;
   text-align: center;
 }
 .comparison {
-  height: auto;
-  width: 80%;
+  height: 350px;
+  width: auto !important;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   flex-direction: row;
   background-color: #171616;
   border-radius: 36px;
+  gap: 15px;
   padding: 22px;
   background-color: $second_color;
   color: white;
   margin-top: 20px;
   margin-bottom: 80px;
   .other-tools {
-    width: 60%;
+    width: auto;
     height: 100%;
     background-color: $second_color;
     border-radius: 4%;
@@ -60,8 +61,8 @@ $background: #050505;
     }
   }
   .clario {
-    width: 60%;
-    height: 100%;
+    width: auto;
+    height: 110%;
     background-color: black;
     border-radius: 36px;
     box-shadow: 1px 1px 5px -1px $main_color;
@@ -110,22 +111,22 @@ $background: #050505;
     font-family: 'Lexend-Regular', sans-serif;
   }
   .title-why {
-    font-size: 30px;
+    font-size: 35px;
     font-family: 'Lexend-ExtraLight', sans-serif;
     margin-bottom: 20px;
     color: white;
-    width: 90%;
+    width: 100%;
     text-align: center;
   }
   .comparison {
     height: auto;
-    width: 500px;
+    width: 90%;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
     flex-direction: row;
     background-color: #171616;
-    border-radius: 4%;
+    border-radius: 56px;
     padding: 22px;
     background-color: $second_color;
     color: white;
@@ -133,13 +134,14 @@ $background: #050505;
     flex-wrap: wrap;
 
     .other-tools {
-      width: 60%;
+      width: 100%;
       height: auto;
       background-color: $second_color;
-      border-radius: 4%;
+      border-radius: 16px;
       display: flex;
       justify-content: center;
       flex-direction: column;
+      padding: 12px;
       gap: 15px;
       span {
         color: #8e8e8e;
@@ -150,10 +152,10 @@ $background: #050505;
       }
     }
     .clario {
-      width: 60%;
+      width: 100%;
       height: auto;
       background-color: black;
-      border-radius: 10%;
+      border-radius: 16px;
       box-shadow: 1px 1px 5px -1px $main_color;
       display: flex;
       justify-content: center;

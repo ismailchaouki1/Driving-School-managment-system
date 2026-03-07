@@ -8,6 +8,7 @@ import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import HowItWorks from '../components/HowitWorks';
 import Why from '../components/WhySection';
+import ReviewsSection from '../components/ReviewsSection';
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
@@ -42,6 +43,9 @@ export default function HomePage() {
           </section>
           <section className="container-xl">
             <Why />
+          </section>
+          <section className="container-xl">
+            <ReviewsSection />
           </section>
         </div>
       </div>

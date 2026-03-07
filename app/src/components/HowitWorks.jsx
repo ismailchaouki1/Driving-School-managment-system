@@ -41,10 +41,8 @@ export default function HowItWorks() {
         },
       });
 
-      tl.from(
+      tl.from([video.current, title.current], { x: -180, opacity: 0, stagger: 0.25 }).from(
         [
-          video.current,
-          title.current,
           step1ref.current,
           step2ref.current,
           step3ref.current,
@@ -53,9 +51,9 @@ export default function HowItWorks() {
           step6ref.current,
         ],
         {
-          x: -80,
+          y: 180,
           opacity: 0,
-          stagger: 0.25, // smooth stagger animation
+          stagger: 0.3, // smooth stagger animation
         },
       );
     }, container);
@@ -112,7 +110,7 @@ export default function HowItWorks() {
         <FontAwesomeIcon icon={faCirclePlay} className="play" onClick={() => setOpen(true)} />
         <span style={{ color: '#8cff2e' }}>Watch Video</span>
       </div>
-      <h1 className="title" ref={title}>
+      <h1 className="how-title" ref={title}>
         How Clario works
       </h1>
       <Video opened={open} onClose={() => setOpen(false)} />
