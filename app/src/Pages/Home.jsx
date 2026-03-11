@@ -10,6 +10,7 @@ import HowItWorks from '../components/HowitWorks';
 import Why from '../components/WhySection';
 import ReviewsSection from '../components/ReviewsSection';
 import Features from '../components/Features';
+import ChatwayWidget from '../api/chatbot/ChatwayWidget';
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
@@ -31,6 +32,7 @@ export default function HomePage() {
     <div id="smooth-wrapper">
       <div id="smooth-content">
         <div className="mainContainer">
+          <ChatwayWidget />
           <header className="container-xl">
             <Header />
           </header>
