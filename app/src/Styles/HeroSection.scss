@@ -31,15 +31,17 @@ body {
 // Badge
 .hero-badge {
   width: auto;
-  padding: 7px;
+  padding: 10px;
   margin-top: 10%;
   height: 30px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: $main_color;
   background-color: black;
   border-radius: 10px;
   box-shadow: 1px 1px 3px -1px $main_color;
-  font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
+  font-family: 'Manrope-ExtraLights', 'Manrope-Variable', sans-serif;
   font-weight: 600;
 }
 

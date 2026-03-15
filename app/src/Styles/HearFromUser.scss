@@ -1,0 +1,208 @@
+$main_color: #8cff2e;
+$text_color: #8e8e8e;
+$second_color: #333333bb;
+$background: #050505;
+
+.hear-from-user {
+  height: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 40px;
+  margin-top: -100px;
+  .user-video {
+    width: auto;
+    height: 400px;
+    background-image: url('../assets/images/user-image.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    order: 1;
+    .overlay {
+      position: absolute;
+      inset: 0; /* top:0; right:0; bottom:0; left:0 */
+      background-color: rgba(0, 0, 0, 0); /* default transparent */
+      backdrop-filter: blur(0px);
+      -webkit-backdrop-filter: blur(0px);
+      transition: all 0.3s ease;
+      border-radius: 20px;
+      z-index: 1;
+    }
+
+    .cont {
+      position: relative;
+      z-index: 2; /* above overlay */
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .video-play {
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        .circle {
+          width: 90px;
+          height: 90px;
+          border-radius: 50%;
+          background-color: rgba(17, 16, 16, 0.7);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transition: all 0.3s ease;
+
+          .fa-play {
+            color: white;
+            font-size: 40px;
+            transition: all 0.3s ease;
+          }
+        }
+      }
+    }
+
+    &:hover {
+      .overlay {
+        background-color: rgba(0, 0, 0, 0.5); /* dark semi-transparent */
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+
+      .cont .video-play .circle {
+        transform: scale(1.1);
+        background-color: #8cff2e; /* optional hover color */
+      }
+
+      .cont .video-play .circle .fa-play {
+        color: black; /* icon color on hover */
+      }
+    }
+  }
+  .user-review {
+    height: 90%;
+    width: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: start;
+    flex-direction: column;
+    margin-bottom: 40px;
+    flex: 1;
+    order: 2;
+    span {
+      text-align: start;
+      font-size: 35px;
+      font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
+    }
+    .user-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $main_color;
+      margin-top: 15%;
+      margin-bottom: 20px;
+      font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
+      font-weight: 400;
+      color: #8cff2e;
+      span {
+        font-size: 14px;
+      }
+    }
+    .getInTouch {
+      background-color: transparent;
+      border: none;
+      color: white;
+      font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
+      font-weight: 500;
+      padding: 12px;
+      width: 140px auto;
+      display: inline-flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+
+      .arrow-box {
+        position: relative;
+        width: 18px;
+        height: 18px;
+        overflow: hidden;
+
+        .arrow {
+          position: absolute;
+          top: 0;
+          left: 0;
+          transition:
+            transform 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+            opacity 0.3s ease;
+        }
+
+        .first {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+
+        .second {
+          transform: translate(-12px, 12px);
+          opacity: 0;
+        }
+      }
+
+      &:hover {
+        .first {
+          transform: translate(12px, -12px);
+          opacity: 0;
+        }
+        .second {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+/// resolve this ?????????
+@media (max-width: 768px) {
+  .hear-from-user {
+    height: auto;
+    flex-direction: column;
+    margin-top: 100px;
+    gap: 20px;
+
+    .user-video {
+      order: 2;
+      width: 100%;
+      max-height: 300px;
+      margin-bottom: 80px;
+
+      .cont .video-play .circle {
+        width: 70px;
+        height: 70px;
+
+        .fa-play {
+          font-size: 30px;
+        }
+      }
+    }
+
+    .user-review {
+      order: 1;
+      width: 100%;
+      align-items: center;
+      text-align: center;
+
+      .user-badge {
+        margin-top: 2em; // relative spacing
+      }
+
+      span {
+        font-size: 25px;
+        text-align: center;
+      }
+    }
+  }
+}

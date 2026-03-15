@@ -12,7 +12,6 @@ $background: #050505;
   flex-direction: column;
 }
 
-/* VIDEO BUTTON */
 .video {
   display: flex;
   align-items: center;
@@ -31,7 +30,6 @@ $background: #050505;
   }
 }
 
-/* TITLE */
 .how-title {
   font-size: 50px;
   font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
@@ -39,7 +37,6 @@ $background: #050505;
   margin-bottom: 20px;
 }
 
-/* STEPS CONTAINER */
 .steps {
   width: 100%;
   display: flex;
@@ -50,7 +47,6 @@ $background: #050505;
   font-weight: 200;
 }
 
-/* CARD */
 .card {
   flex: 1 1 320px;
   max-width: 380px;
@@ -101,7 +97,6 @@ $background: #050505;
   }
 }
 
-/* BADGE */
 .card-badge {
   width: fit-content;
   height: 30px;
