@@ -1,0 +1,104 @@
+$main_color: #8cff2e;
+$text_color: #8e8e8e;
+$second_color: #333333bb;
+$background: #050505;
+
+.faq-section {
+  height: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.accord {
+  border: 2px solid #424242bb;
+  border-radius: 100px;
+  .badge-faq {
+    width: fit-content;
+    height: 30px;
+    padding: 7px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: $main_color;
+    background-color: black;
+    border-radius: 10px;
+    margin: 20px 0 15px 0;
+    font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
+    font-weight: 400;
+    margin-right: 10px;
+  }
+  &:active {
+    .badge-faq {
+      box-shadow: 1px 1px 3px -1px $main_color;
+    }
+  }
+}
+
+.response {
+  font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
+  color: $text_color;
+}
+.title-faq {
+  font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif !important;
+  font-weight: 400;
+  font-size: 20px !important;
+}
+.faq-titles {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 60px;
+  margin-bottom: 20px;
+}
+
+.faq-title {
+  width: 50%;
+  display: flex;
+  align-items: center;
+
+  h1 {
+    font-size: 50px;
+    font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
+    font-weight: 200;
+    color: white;
+  }
+}
+
+.faq-subtitle {
+  width: 30%;
+  display: flex;
+  align-items: center;
+  color: #8e8e8e;
+  font-size: 18px;
+
+  p {
+    font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
+    font-weight: 400;
+  }
+}
+
+///responsive FAQ section
+@media (max-width: 768px) {
+  .faq-section {
+    height: auto;
+    padding-bottom: 4rem;
+  }
+  .faq-titles {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    .faq-title {
+      h1 {
+        font-size: 40px;
+        margin-bottom: -12px;
+        margin-top: 25px;
+      }
+      width: 90%;
+    }
+    .faq-subtitle {
+      width: 90%;
+    }
+  }
+}
