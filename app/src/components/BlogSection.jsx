@@ -1,16 +1,45 @@
 import '../Styles/App.scss';
 import '../Styles/BlogSection.scss';
 import BlogCard from './blogCard';
-import { useContext } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { BlogContext } from '../contexts/BlogContext';
+import { gsap } from 'gsap';
 export default function BlogSection() {
   const myContext = useContext(BlogContext);
   const mainBlog = myContext.main_blog;
   const BlogList = myContext.blogs;
+  const container = useRef(null);
+  const title = useRef(null);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container.current,
+          start: 'top 80%', // when section enters viewport
+          end: 'bottom 20%',
+          toggleActions: 'play none none none', // play once
+          scrub: false, // set to true if you want scroll-controlled animation
+          // markers: true,     // enable for debugging
+        },
+        defaults: {
+          duration: 1.2,
+          ease: 'power3.out', // smoother easing
+        },
+      });
+
+      tl.from(title.current, {
+        x: -180,
+        opacity: 0,
+        stagger: 0.3, // smooth stagger animation
+      });
+    }, container);
+
+    return () => ctx.revert(); // proper cleanup
+  }, []);
   return (
-    <div className="blog-section">
+    <div className="blog-section" ref={container}>
       <div className="blog-titles">
-        <h1>Explore the blog</h1>
+        <h1 ref={title}>Explore the blog</h1>
         <button className="view-posts-btn rounded-pill">
           View all posts
           <span className="arrow-box">

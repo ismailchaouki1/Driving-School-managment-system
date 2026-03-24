@@ -1,0 +1,315 @@
+$main_color: #8cff2e;
+$text_color: #8e8e8e;
+$second_color: #0d0d0d;
+$background: #050505;
+.ready-to-start {
+  margin-top: 40px;
+  height: 1000px;
+  .ready-to-start-card {
+    padding: 40px;
+    height: 300px;
+    background-color: $second_color;
+    border-radius: 40px;
+    display: flex;
+    position: relative;
+    overflow: visible;
+    .ready-to-start-content {
+      width: 60%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      justify-content: center;
+      gap: 10px;
+      h1 {
+        font-size: 50px;
+        font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
+      }
+      p {
+        color: $text_color;
+        font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
+      }
+      .ready-to-start-button {
+        background-color: $main_color !important;
+        color: black;
+        border: #8cff2e;
+        font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
+        font-weight: 500;
+        box-shadow: 1px 1px 60px -10px $main_color;
+        padding: 12px;
+        width: 140px;
+        display: inline-flex;
+        justify-content: center;
+        gap: 8px;
+
+        .arrow-box {
+          position: relative;
+          width: 18px;
+          height: 18px;
+          overflow: hidden;
+
+          .arrow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition:
+              transform 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+              opacity 0.3s ease;
+          }
+
+          .first {
+            transform: translate(0, 0);
+            opacity: 1;
+          }
+          .second {
+            transform: translate(-12px, 12px);
+            opacity: 0;
+          }
+        }
+
+        &:hover {
+          color: $background !important;
+
+          .first {
+            transform: translate(12px, -12px);
+            opacity: 0;
+          }
+          .second {
+            transform: translate(0, 0);
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+  .ready-to-start-image {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 140%;
+    width: 45%; // ← required! divs have no natural size
+    z-index: 1;
+    background-image: url('../assets/images/man-take-phone.png');
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    // smooth fade into the dark background on the left
+    mask-image: linear-gradient(to top, transparent 0%, black 70%);
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 70%);
+  }
+}
+
+$main_color: #8cff2e;
+$text_color: #8e8e8e;
+$second_color: #0d0d0d;
+$background: #050505;
+.ready-to-start {
+  margin-top: 40px;
+  height: 1000px;
+  .ready-to-start-card {
+    padding: 40px;
+    height: 300px;
+    background-color: $second_color;
+    border-radius: 40px;
+    display: flex;
+    position: relative;
+    overflow: visible;
+    .ready-to-start-content {
+      width: 60%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      justify-content: center;
+      gap: 10px;
+      h1 {
+        font-size: 50px;
+        font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
+      }
+      p {
+        color: $text_color;
+        font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
+      }
+      .ready-to-start-button {
+        background-color: $main_color !important;
+        color: black;
+        border: #8cff2e;
+        font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
+        font-weight: 500;
+        box-shadow: 1px 1px 60px -10px $main_color;
+        padding: 12px;
+        width: 140px;
+        display: inline-flex;
+        justify-content: center;
+        gap: 8px;
+
+        .arrow-box {
+          position: relative;
+          width: 18px;
+          height: 18px;
+          overflow: hidden;
+
+          .arrow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition:
+              transform 0.45s cubic-bezier(0.65, 0, 0.35, 1),
+              opacity 0.3s ease;
+          }
+
+          .first {
+            transform: translate(0, 0);
+            opacity: 1;
+          }
+          .second {
+            transform: translate(-12px, 12px);
+            opacity: 0;
+          }
+        }
+
+        &:hover {
+          color: $background !important;
+
+          .first {
+            transform: translate(12px, -12px);
+            opacity: 0;
+          }
+          .second {
+            transform: translate(0, 0);
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+  .ready-to-start-image {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 140%;
+    width: 45%; // ← required! divs have no natural size
+    z-index: 1;
+    background-image: url('../assets/images/man-take-phone.png');
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    // smooth fade into the dark background on the left
+    mask-image: linear-gradient(to top, transparent 0%, black 70%);
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 70%);
+  }
+}
+// ── Tablet (≤ 1024px) ──
+@media (max-width: 1024px) {
+  .ready-to-start {
+    height: auto;
+
+    .ready-to-start-card {
+      height: 280px;
+      padding: 30px;
+
+      .ready-to-start-content {
+        width: 65%;
+
+        h1 {
+          font-size: 38px;
+        }
+      }
+    }
+
+    .ready-to-start-image {
+      width: 40%;
+      height: 130%;
+    }
+  }
+}
+
+// ── Tablet portrait (≤ 768px) ──
+@media (max-width: 768px) {
+  .ready-to-start {
+    height: auto;
+
+    .ready-to-start-card {
+      height: 260px;
+      padding: 28px;
+      border-radius: 28px;
+
+      .ready-to-start-content {
+        width: 60%;
+        gap: 8px;
+
+        h1 {
+          font-size: 28px;
+        }
+
+        p {
+          font-size: 13px;
+        }
+
+        .ready-to-start-button {
+          width: 120px;
+          padding: 10px;
+          font-size: 13px;
+        }
+      }
+    }
+
+    .ready-to-start-image {
+      width: 42%;
+      height: 120%;
+    }
+  }
+}
+
+// ── Mobile (≤ 480px) ──
+@media (max-width: 480px) {
+  .ready-to-start {
+    height: 700px;
+    margin-top: 24px;
+
+    .ready-to-start-card {
+      margin-top: -170px;
+      height: auto;
+      min-height: 420px;
+      padding: 24px 20px;
+      border-radius: 20px;
+      overflow: hidden;
+      flex-direction: column; // ← stack vertically
+
+      .ready-to-start-content {
+        width: 100%; // ← full width on top
+        height: auto;
+        z-index: 2;
+        gap: 10px;
+
+        h1 {
+          font-size: 22px;
+          line-height: 1.2;
+        }
+
+        p {
+          font-size: 12px;
+          line-height: 1.5;
+        }
+
+        .ready-to-start-button {
+          width: 110px;
+          padding: 9px;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .ready-to-start-image {
+      position: relative; // ← back to normal flow
+      width: 100%; // ← full width at the bottom
+      height: 250px;
+      right: unset;
+      bottom: unset;
+      mask-image: linear-gradient(to top, transparent 0%, black 60%);
+      -webkit-mask-image: linear-gradient(to top, transparent 0%, black 60%);
+    }
+  }
+}

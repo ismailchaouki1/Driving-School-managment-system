@@ -15,6 +15,7 @@ import HearFromUser from '../components/HearFromUser';
 import PricingSection from '../components/PricingSection';
 import FAQ from '../components/FAQ';
 import BlogSection from '../components/BlogSection';
+import ReadyToStartCard from '../components/ReadyToStartCard';
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
@@ -68,6 +69,9 @@ export default function HomePage() {
           </section>
           <section className="container-md">
             <BlogSection />
+          </section>
+          <section className="container-md">
+            <ReadyToStartCard />
           </section>
         </div>
       </div>
