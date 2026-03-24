@@ -43,7 +43,7 @@ export default function FAQ() {
   };
 
   const commonAccordionSx = {
-    background: '#111010bb',
+    background: '#0D0D0D',
     borderRadius: '16px',
     color: 'white',
     '&:not(:last-child)': {

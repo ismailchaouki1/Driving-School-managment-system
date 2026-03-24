@@ -1,6 +1,6 @@
 $main_color: #8cff2e;
 $text_color: white;
-$second_color: #111010bb;
+$second_color: #0d0d0d;
 $background: #050505;
 
 .howItWorks {
@@ -35,6 +35,7 @@ $background: #050505;
   font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
   font-weight: 200;
   margin-bottom: 20px;
+  letter-spacing: -1px;
 }
 
 .steps {

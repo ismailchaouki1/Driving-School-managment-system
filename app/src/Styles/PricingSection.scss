@@ -1,6 +1,6 @@
 $main_color: #8cff2e;
 $text_color: #8e8e8e;
-$second_color: #333333bb;
+$second_color: #0d0d0d;
 $background: #050505;
 
 $font_family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
@@ -37,7 +37,7 @@ $font_family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
   align-items: center;
   justify-content: flex-start;
   margin-top: -40px;
-  background: $background;
+  background: black;
   color: #fff;
 
   *,
@@ -83,6 +83,7 @@ $font_family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
   color: #fff;
   width: 100%;
   text-align: center;
+  letter-spacing: -1px;
 }
 
 // Subtext
@@ -167,7 +168,7 @@ $font_family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
 
 // Card
 .pricing-card {
-  background: #111;
+  background: $second_color;
   border-radius: 16px;
   border: 1px solid $second_color;
   padding: 1.5rem;

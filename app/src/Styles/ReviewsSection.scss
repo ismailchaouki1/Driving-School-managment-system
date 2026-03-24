@@ -1,6 +1,6 @@
 $main_color: #8cff2e;
 $text_color: white;
-$second_color: #333333bb;
+$second_color: #0d0d0d;
 $background: #050505;
 
 /* MAIN SECTION */
@@ -32,6 +32,7 @@ $background: #050505;
     font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
     font-weight: 200;
     color: $text_color;
+    letter-spacing: -1px;
   }
 }
 
@@ -81,7 +82,7 @@ $background: #050505;
 .review-card {
   width: 420px;
   height: 220px;
-  background: rgba(12, 12, 12, 0.9);
+  background: $second_color;
   border-radius: 50px;
   padding: 40px;
   backdrop-filter: blur(18px);

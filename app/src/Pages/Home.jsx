@@ -14,6 +14,7 @@ import ChatwayWidget from '../api/chatbot/ChatwayWidget';
 import HearFromUser from '../components/HearFromUser';
 import PricingSection from '../components/PricingSection';
 import FAQ from '../components/FAQ';
+import BlogSection from '../components/BlogSection';
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
@@ -40,30 +41,33 @@ export default function HomePage() {
             <Header />
           </header>
 
-          <section className="container-xl">
+          <section className="container-md">
             <HeroSection />
           </section>
 
-          <section className="container-xl">
+          <section className="container-md">
             <HowItWorks />
           </section>
-          <section className="container-xl">
+          <section className="container-md">
             <Why />
           </section>
-          <section className="container-xl">
+          <section className="container-md">
             <ReviewsSection />
           </section>
-          <section className="container-xl">
+          <section className="container-md">
             <Features />
           </section>
-          <section className="container-xl">
+          <section className="container-md">
             <HearFromUser />
           </section>
-          <section className="container-xl">
+          <section className="container-md">
             <PricingSection />
           </section>
-          <section className="container-xl">
+          <section className="container-md">
             <FAQ />
+          </section>
+          <section className="container-md">
+            <BlogSection />
           </section>
         </div>
       </div>
