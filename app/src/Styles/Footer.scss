@@ -88,6 +88,7 @@ $background: #050505;
 /* 📱 Responsive */
 @media (max-width: 768px) {
   .footer {
+    margin-top: -70px;
     padding: 40px 20px;
 
     .footer-container {

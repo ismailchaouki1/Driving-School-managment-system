@@ -1,9 +1,54 @@
 import '../Styles/Header.scss';
 import '../Styles/App.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import gsap from 'gsap';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    const links = document.querySelectorAll('.nav-link');
+
+    const handleScroll = (e) => {
+      const href = e.currentTarget.getAttribute('href');
+
+      // Only trigger if it's an internal hash link
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+
+        if (target) {
+          gsap.to(window, {
+            duration: 1.2,
+            scrollTo: {
+              y: target,
+              offsetY: 80, // Matches your header height
+              autoKill: true, // Allows user to interrupt scroll
+            },
+            ease: 'power3.inOut',
+          });
+
+          // Logic to close the mobile menu after clicking
+          const menu = document.querySelector('.navbar-collapse');
+          if (menu.classList.contains('show')) {
+            // If using Bootstrap's JS, trigger the toggle
+            // Or if using a state-based menu, setMenuOpen(false)
+            menu.classList.remove('show');
+
+            // Also reset your hamburger icon state if it has an "open" class
+            const toggler = document.querySelector('.navbar-toggler');
+            toggler.classList.remove('open');
+          }
+        }
+      }
+    };
+
+    links.forEach((link) => link.addEventListener('click', handleScroll));
+
+    // Cleanup listeners on unmount
+    return () => {
+      links.forEach((link) => link.removeEventListener('click', handleScroll));
+    };
+  }, []);
   return (
     <nav className="navbar navbar-expand-lg fixed-top">
       <div className="container-md">
@@ -40,22 +85,22 @@ export default function Header() {
         <div className={`navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
           <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">
+              <a className="nav-link active" aria-current="page" href="#how-it-works">
                 How it works
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <a className="nav-link" href="#features">
                 Features
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <a className="nav-link" href="#pricing">
                 Pricing
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <a className="nav-link" href="#blog">
                 Blog
               </a>
             </li>

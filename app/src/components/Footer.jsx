@@ -47,20 +47,36 @@ const Footer = () => {
           <div className="footer-column">
             <h4>Quick Menu</h4>
             <ul>
-              <li>How it works</li>
-              <li>Features</li>
-              <li>Pricing</li>
-              <li>Blog</li>
+              <li className="nav-item">
+                <a className="nav-link active" aria-current="page" href="#how-it-works">
+                  How it works
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="#features">
+                  Features
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="#pricing">
+                  Pricing
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="#blog">
+                  Blog
+                </a>
+              </li>
             </ul>
           </div>
 
           <div className="footer-column">
             <h4>Information</h4>
             <ul>
-              <li>Contact</li>
-              <li>Privacy Policy</li>
-              <li>Terms</li>
-              <li>Blog</li>
+              <li className="nav-item">Contact</li>
+              <li className="nav-item">Privacy Policy</li>
+              <li className="nav-item">Terms</li>
+              <li className="nav-item">Blogs</li>
             </ul>
           </div>
         </div>

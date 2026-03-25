@@ -3,3 +3,7 @@
   min-height: 100dvh;
   background-color: black;
 }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
