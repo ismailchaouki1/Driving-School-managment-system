@@ -23,12 +23,20 @@ export default function BlogPage() {
         normalizeScroll: true,
       });
     }
+    const smoother = ScrollSmoother.create({});
+    // If the URL has a hash (like #features), scroll to it after load
+    if (window.location.hash) {
+      const timer = setTimeout(() => {
+        smoother.scrollTo(window.location.hash, true, 'top 80px');
+      }, 500); // Give components time to render
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   return (
     <div id="smooth-wrapper">
       <header className="container-xl">
-        <Header />
+        <Header appear={false} />
       </header>
       <div id="smooth-content">
         <div className="mainContainer" ref={smootherRef}>

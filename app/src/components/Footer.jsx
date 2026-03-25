@@ -1,7 +1,28 @@
+import { Link } from 'react-router';
 import '../Styles/App.scss';
 import '../Styles/Footer.scss';
+import { ScrollSmoother } from 'gsap/ScrollSmoother';
 
 const Footer = () => {
+  const handleScroll = () => {
+    // 1. Get the existing instance
+    const smoother = ScrollSmoother.get();
+
+    if (smoother) {
+      // 2. Tell GSAP to scroll to the top (0) smoothly
+      smoother.scrollTo(0, true);
+    }
+  };
+  const handleNavClick = (e, sectionId) => {
+    // If we are already on the home page, just scroll smoothly
+    if (window.location.pathname === '/') {
+      e.preventDefault(); // Stop the page from reloading/navigating
+      const smoother = ScrollSmoother.get();
+      if (smoother) {
+        smoother.scrollTo(sectionId, true, 'top 80px'); // 80px offset for header
+      }
+    }
+  };
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -47,26 +68,30 @@ const Footer = () => {
           <div className="footer-column">
             <h4>Quick Menu</h4>
             <ul>
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#how-it-works">
-                  How it works
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#features">
-                  Features
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#pricing">
-                  Pricing
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#blog">
-                  Blog
-                </a>
-              </li>
+              <Link
+                onClick={(e) => handleNavClick(e, '#how-it-works')}
+                className="nav-link"
+                to={'/'}
+              >
+                <li className="nav-item">
+                  <a className="nav-link">How it works</a>
+                </li>
+              </Link>
+              <Link onClick={(e) => handleNavClick(e, '#features')} className="nav-link" to={'/'}>
+                <li className="nav-item">
+                  <a className="nav-link">Features</a>
+                </li>
+              </Link>
+              <Link onClick={(e) => handleNavClick(e, '#pricing')} className="nav-link" to={'/'}>
+                <li className="nav-item">
+                  <a className="nav-link">Pricing</a>
+                </li>
+              </Link>
+              <Link onClick={(e) => handleNavClick(e, '#blog')} className="nav-link" to={'/'}>
+                <li className="nav-item">
+                  <a className="nav-link">Blog</a>
+                </li>
+              </Link>
             </ul>
           </div>
 
@@ -76,7 +101,11 @@ const Footer = () => {
               <li className="nav-item">Contact</li>
               <li className="nav-item">Privacy Policy</li>
               <li className="nav-item">Terms</li>
-              <li className="nav-item">Blogs</li>
+              <Link onClick={handleScroll} className="nav-link" to={'/blog'}>
+                <li className="nav-item">
+                  <a className="nav-link">Blogs</a>
+                </li>
+              </Link>
             </ul>
           </div>
         </div>

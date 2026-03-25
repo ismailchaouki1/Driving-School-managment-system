@@ -5,7 +5,17 @@ import { useContext, useEffect, useRef } from 'react';
 import { BlogContext } from '../contexts/BlogContext';
 import { gsap } from 'gsap';
 import { Link } from 'react-router';
+import { ScrollSmoother } from 'gsap/ScrollSmoother';
 export default function BlogSection({ blogpage = true }) {
+  const handleScroll = () => {
+    // 1. Get the existing instance
+    const smoother = ScrollSmoother.get();
+
+    if (smoother) {
+      // 2. Tell GSAP to scroll to the top (0) smoothly
+      smoother.scrollTo(0, true);
+    }
+  };
   const myContext = useContext(BlogContext);
   const mainBlog = myContext.main_blog;
   const BlogList = myContext.blogs;
@@ -90,7 +100,7 @@ export default function BlogSection({ blogpage = true }) {
       <div className="blog-section" ref={container}>
         <div className="blog-titles">
           <h1 ref={title}>Explore the blog</h1>
-          <Link to="/blog" className="nav-link">
+          <Link onClick={handleScroll} to="/blog" className="nav-link">
             <button className="view-posts-btn rounded-pill">
               View all posts
               <span className="arrow-box">
