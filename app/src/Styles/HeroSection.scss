@@ -69,22 +69,21 @@ body {
 .hero-button {
   background-color: $main_color !important;
   color: black;
-  font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
-  font-weight: 400;
   border: #8cff2e;
+  font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
+  font-weight: 500;
   box-shadow: 1px 1px 60px -10px $main_color;
-  padding: 12px;
+  padding: 15px;
   width: 220px;
-  display: inline-flex;
-  justify-content: center;
+  display: flex;
   align-items: center;
-  gap: 8px;
 
   .arrow-box {
     position: relative;
     width: 18px;
     height: 18px;
     overflow: hidden;
+    margin-left: 10px;
 
     .arrow {
       position: absolute;
@@ -99,7 +98,6 @@ body {
       transform: translate(0, 0);
       opacity: 1;
     }
-
     .second {
       transform: translate(-12px, 12px);
       opacity: 0;
@@ -113,7 +111,6 @@ body {
       transform: translate(12px, -12px);
       opacity: 0;
     }
-
     .second {
       transform: translate(0, 0);
       opacity: 1;

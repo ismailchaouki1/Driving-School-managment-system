@@ -99,7 +99,11 @@ const Footer = () => {
             <h4>Information</h4>
             <ul>
               <li className="nav-item">Contact</li>
-              <li className="nav-item">Privacy Policy</li>
+              <Link onClick={handleScroll} className="nav-link" to={'/privacy-policy'}>
+                <li className="nav-item">
+                  <a className="nav-link">Privacy Policy</a>
+                </li>
+              </Link>
               <Link onClick={handleScroll} className="nav-link" to={'/terms'}>
                 <li className="nav-item">
                   <a className="nav-link">Terms</a>

@@ -3,6 +3,7 @@ import HomePage from '../Pages/Home';
 import BlogPage from '../Pages/Blog';
 import BlogPost from '../Pages/BlogPost';
 import TermsPage from '../Pages/Terms';
+import PrivacyPage from '../Pages/Privacy';
 
 export default function AppRoutes() {
   return (
@@ -12,6 +13,7 @@ export default function AppRoutes() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:id" element={<BlogPost />} />
         <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPage />} />
       </Routes>
     </BrowserRouter>
   );
