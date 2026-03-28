@@ -93,10 +93,14 @@ $background: #050505;
     margin-bottom: 40px;
     flex: 1;
     order: 2;
+    .heart {
+      color: #8cff2e;
+    }
     span {
       text-align: start;
       font-size: 35px;
       font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
+      color: white;
     }
     .user-badge {
       display: flex;
@@ -115,7 +119,7 @@ $background: #050505;
     .getInTouch {
       background-color: transparent;
       border: none;
-      color: white;
+      color: $main_color;
       font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
       font-weight: 500;
       padding: 12px;
@@ -130,6 +134,7 @@ $background: #050505;
         width: 18px;
         height: 18px;
         overflow: hidden;
+        color: $main_color;
 
         .arrow {
           position: absolute;

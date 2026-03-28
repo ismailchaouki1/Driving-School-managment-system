@@ -55,7 +55,7 @@ export default function HearFromUser() {
       <Video opened={open} onClose={() => setOpen(false)} />
       <div className="user-review" ref={container2}>
         <div className="user-badge">
-          <span>❤︎</span> ⁠ Hear from our users
+          <span className="heart">❤︎</span> ⁠ Hear from our users
         </div>
         <span>
           "Clario makes managing my driving school so easy! I can focus on teaching students

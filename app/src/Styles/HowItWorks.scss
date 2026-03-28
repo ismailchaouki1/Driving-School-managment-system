@@ -51,10 +51,10 @@ $background: #050505;
 .card {
   flex: 1 1 320px;
   max-width: 380px;
-  background: $second_color;
-  border-radius: 24px;
+  background: $second_color !important;
+  border-radius: 24px !important;
   padding: 15px;
-  color: white;
+  color: white !important;
   transition: 0.3s ease;
   font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
   font-weight: 400;

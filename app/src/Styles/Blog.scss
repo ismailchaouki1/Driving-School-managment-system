@@ -1,16 +1,53 @@
-.mainContainer {
-  min-height: 100vh;
-  min-height: 100vh;
-  background-color: black;
+// 1. Root Fix: Force the entire browser canvas to be black
+html,
+body {
+  background-color: black !important;
+  margin: 0;
+  padding: 0;
 }
-.blogs {
-  margin-bottom: 500px !important; // Desktop default
+
+// 2. Fixed Header Styling
+.fixed-header-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: black; // Ensures header area is black
+  padding: 10px 0;
+}
+
+// 3. Smooth Wrapper
+#smooth-wrapper {
+  background-color: black;
+  width: 100%;
+}
+
+.mainContainer {
+  background-color: black;
+  min-height: 100vh;
+  /* Adjust this padding to match your header's height */
+  padding-top: 100px;
+}
+
+// 4. Correcting the Gaps between sections
+.blogs-section {
+  /* Use padding instead of margin to prevent background gaps */
+  padding-bottom: 300px;
 
   @media (max-width: 1024px) {
-    margin-bottom: 300px; // Tablet
+    padding-bottom: 200px;
   }
 
   @media (max-width: 768px) {
-    margin-bottom: 150px; // Mobile
+    padding-bottom: 100px;
   }
+}
+
+.ready-section {
+  padding-bottom: 100px;
+}
+
+.footer-section {
+  background-color: black;
 }

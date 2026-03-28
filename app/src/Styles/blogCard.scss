@@ -1,7 +1,4 @@
-$main_color: #8cff2e;
-$text_color: #8e8e8e;
-$second_color: #0d0d0d;
-$background: #050505;
+@import './App.scss';
 
 .card-blog {
   width: 30%;
@@ -28,6 +25,7 @@ $background: #050505;
       font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
       width: 100%;
       font-size: 25px;
+      color: white;
     }
     .card-readMore {
       background-color: transparent;

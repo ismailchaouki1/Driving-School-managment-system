@@ -1,10 +1,9 @@
-$main_color: #8cff2e;
-$text_color: #8e8e8e;
-$second_color: #0d0d0d;
-$background: #050505;
+@import './App.scss';
+
 .ready-to-start {
   margin-top: 40px;
-  height: 1000px;
+  padding-bottom: 80px;
+
   .ready-to-start-card {
     padding: 40px;
     height: 300px;
@@ -13,6 +12,7 @@ $background: #050505;
     display: flex;
     position: relative;
     overflow: visible;
+
     .ready-to-start-content {
       width: 60%;
       height: 100%;
@@ -21,18 +21,22 @@ $background: #050505;
       align-items: start;
       justify-content: center;
       gap: 10px;
+
       h1 {
         font-size: 50px;
         font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
+        color: white;
       }
+
       p {
         color: $text_color;
         font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
       }
+
       .ready-to-start-button {
         background-color: $main_color !important;
         color: black;
-        border: #8cff2e;
+        border: $main_color;
         font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
         font-weight: 500;
         box-shadow: 1px 1px 60px -10px $main_color;
@@ -82,125 +86,24 @@ $background: #050505;
       }
     }
   }
+
   .ready-to-start-image {
     position: absolute;
     right: 0;
     bottom: 0;
     height: 140%;
-    width: 45%; // ← required! divs have no natural size
+    width: 45%;
     z-index: 1;
     background-image: url('../assets/images/man-take-phone.png');
     background-position: top;
     background-repeat: no-repeat;
     background-size: cover;
 
-    // smooth fade into the dark background on the left
     mask-image: linear-gradient(to top, transparent 0%, black 70%);
     -webkit-mask-image: linear-gradient(to top, transparent 0%, black 70%);
   }
 }
 
-$main_color: #8cff2e;
-$text_color: #8e8e8e;
-$second_color: #0d0d0d;
-$background: #050505;
-.ready-to-start {
-  margin-top: 40px;
-  height: 500px;
-  .ready-to-start-card {
-    padding: 40px;
-    height: 300px;
-    background-color: $second_color;
-    border-radius: 40px;
-    display: flex;
-    position: relative;
-    overflow: visible;
-    .ready-to-start-content {
-      width: 60%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: start;
-      justify-content: center;
-      gap: 10px;
-      h1 {
-        font-size: 50px;
-        font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
-      }
-      p {
-        color: $text_color;
-        font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
-      }
-      .ready-to-start-button {
-        background-color: $main_color !important;
-        color: black;
-        border: #8cff2e;
-        font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
-        font-weight: 500;
-        box-shadow: 1px 1px 60px -10px $main_color;
-        padding: 12px;
-        width: 140px;
-        display: inline-flex;
-        justify-content: center;
-        gap: 8px;
-
-        .arrow-box {
-          position: relative;
-          width: 18px;
-          height: 18px;
-          overflow: hidden;
-
-          .arrow {
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition:
-              transform 0.45s cubic-bezier(0.65, 0, 0.35, 1),
-              opacity 0.3s ease;
-          }
-
-          .first {
-            transform: translate(0, 0);
-            opacity: 1;
-          }
-          .second {
-            transform: translate(-12px, 12px);
-            opacity: 0;
-          }
-        }
-
-        &:hover {
-          color: $background !important;
-
-          .first {
-            transform: translate(12px, -12px);
-            opacity: 0;
-          }
-          .second {
-            transform: translate(0, 0);
-            opacity: 1;
-          }
-        }
-      }
-    }
-  }
-  .ready-to-start-image {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    height: 140%;
-    width: 45%; // ← required! divs have no natural size
-    z-index: 1;
-    background-image: url('../assets/images/man-take-phone.png');
-    background-position: top;
-    background-repeat: no-repeat;
-    background-size: cover;
-
-    // smooth fade into the dark background on the left
-    mask-image: linear-gradient(to top, transparent 0%, black 70%);
-    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 70%);
-  }
-}
 // ── Tablet (≤ 1024px) ──
 @media (max-width: 1024px) {
   .ready-to-start {
@@ -266,7 +169,8 @@ $background: #050505;
 // ── Mobile (≤ 480px) ──
 @media (max-width: 480px) {
   .ready-to-start {
-    height: 700px;
+    height: auto;
+    padding-bottom: 60px;
     margin-top: 24px;
 
     .ready-to-start-card {
@@ -276,10 +180,10 @@ $background: #050505;
       padding: 24px 20px;
       border-radius: 20px;
       overflow: hidden;
-      flex-direction: column; // ← stack vertically
+      flex-direction: column;
 
       .ready-to-start-content {
-        width: 100%; // ← full width on top
+        width: 100%;
         height: auto;
         z-index: 2;
         gap: 10px;
@@ -303,8 +207,8 @@ $background: #050505;
     }
 
     .ready-to-start-image {
-      position: relative; // ← back to normal flow
-      width: 100%; // ← full width at the bottom
+      position: relative;
+      width: 100%;
       height: 250px;
       right: unset;
       bottom: unset;

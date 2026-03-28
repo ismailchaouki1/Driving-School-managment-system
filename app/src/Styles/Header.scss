@@ -1,7 +1,4 @@
-$main_color: #8cff2e;
-$text_color: white;
-$second_color: #0d0d0d;
-$background: #050505;
+@import './App.scss';
 
 .navbar {
   font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
@@ -29,7 +26,7 @@ $background: #050505;
 .navbar-collapse a {
   font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
   font-weight: 400;
-  color: $text_color !important;
+  color: white !important;
   margin-right: 10px;
 
   &:hover {
