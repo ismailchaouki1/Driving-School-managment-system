@@ -100,7 +100,11 @@ const Footer = () => {
             <ul>
               <li className="nav-item">Contact</li>
               <li className="nav-item">Privacy Policy</li>
-              <li className="nav-item">Terms</li>
+              <Link onClick={handleScroll} className="nav-link" to={'/terms'}>
+                <li className="nav-item">
+                  <a className="nav-link">Terms</a>
+                </li>
+              </Link>
               <Link onClick={handleScroll} className="nav-link" to={'/blog'}>
                 <li className="nav-item">
                   <a className="nav-link">Blogs</a>

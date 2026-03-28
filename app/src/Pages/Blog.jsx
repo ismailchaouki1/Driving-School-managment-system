@@ -13,19 +13,32 @@ gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
 export default function BlogPage() {
   const smootherRef = useRef(null);
+  const contentRef = useRef(null);
 
   useEffect(() => {
-    // Initialize ScrollSmoother once
+    // 1. Initialize Smoother
     const smoother = ScrollSmoother.create({
       wrapper: '#smooth-wrapper',
       content: '#smooth-content',
       smooth: 1.5,
       effects: true,
       normalizeScroll: true,
+      ignoreMobileResize: true,
     });
-
     smootherRef.current = smoother;
 
+    // 2. THE FIX: ResizeObserver
+    // This detects if your BlogSection or Card changes height after loading
+    const RO = new ResizeObserver(() => {
+      ScrollTrigger.refresh();
+      smoother.refresh();
+    });
+
+    if (contentRef.current) {
+      RO.observe(contentRef.current);
+    }
+
+    // 3. Handle Hash Links
     if (window.location.hash) {
       const timer = setTimeout(() => {
         smoother.scrollTo(window.location.hash, true, 'top 80px');
@@ -34,13 +47,13 @@ export default function BlogPage() {
     }
 
     return () => {
+      RO.disconnect();
       if (smoother) smoother.kill();
     };
   }, []);
 
   return (
     <>
-      {/* Header stays OUTSIDE smooth-wrapper to remain fixed */}
       <header className="fixed-header-container">
         <div className="container-xl">
           <Header appear={false} />
@@ -48,21 +61,15 @@ export default function BlogPage() {
       </header>
 
       <div id="smooth-wrapper">
-        <div id="smooth-content">
+        <div id="smooth-content" ref={contentRef}>
           <main className="mainContainer">
-            {/* We use padding-top here to push the content down 
-               so it doesn't hide behind your fixed header 
-            */}
-            <section className="blogs-section">
+            <section className="blogs-section" style={{ marginBottom: '400px' }}>
               <div className="container-md">
                 <BlogSection blogpage={false} />
               </div>
             </section>
 
-            <section
-              className="ready-section"
-              style={{ marginBottom: '150px', marginTop: '500px' }}
-            >
+            <section className="ready-section">
               <div className="container-md">
                 <ReadyToStartCard />
               </div>

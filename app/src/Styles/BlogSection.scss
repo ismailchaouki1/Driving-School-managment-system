@@ -273,10 +273,10 @@
     color: $main_color;
     font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
     font-weight: 400;
-    margin: 45% 0 20px; // top 15%, bottom 20px, shorthand
+    margin: 65% 0 20px; // top 15%, bottom 20px, shorthand
 
     @media (min-width: 768px) {
-      margin-top: 200px;
+      margin-top: 100px;
     }
   }
 
