@@ -10,7 +10,7 @@ import HowItWorks from '../components/HowitWorks';
 import Why from '../components/WhySection';
 import ReviewsSection from '../components/ReviewsSection';
 import Features from '../components/Features';
-import ChatwayWidget from '../api/chatbot/ChatwayWidget';
+import ChatwayWidget from '../chatway Component/chatbot/ChatwayWidget';
 import HearFromUser from '../components/HearFromUser';
 import PricingSection from '../components/PricingSection';
 import FAQ from '../components/FAQ';
