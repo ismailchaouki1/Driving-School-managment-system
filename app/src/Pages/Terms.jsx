@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
-import '../Styles/App.scss';
 import '../Styles/Terms.scss';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -12,18 +11,24 @@ gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
 export default function TermsPage() {
   const smootherRef = useRef(null);
-  const contentRef = useRef(null);
 
   useEffect(() => {
-    // Initialize ScrollSmoother once
-    if (!smootherRef.current && document.getElementById('smooth-wrapper')) {
-      smootherRef.current = ScrollSmoother.create({
-        wrapper: '#smooth-wrapper',
-        content: '#smooth-content',
-        smooth: 1.2,
-        effects: true,
-      });
-    }
+    // Initialize ScrollSmoother after component mounts
+    const initSmoother = () => {
+      if (!smootherRef.current && document.getElementById('smooth-wrapper')) {
+        smootherRef.current = ScrollSmoother.create({
+          wrapper: '#smooth-wrapper',
+          content: '#smooth-content',
+          smooth: 1.2,
+          effects: true,
+          normalizeScroll: true, // Helps with scroll behavior
+          ignoreMobileResize: true,
+        });
+      }
+    };
+
+    // Small delay to ensure DOM is ready
+    setTimeout(initSmoother, 100);
 
     const ctx = gsap.context(() => {
       // Header animation
@@ -41,18 +46,16 @@ export default function TermsPage() {
       });
 
       // Paragraph animation (scroll-based)
-      if (contentRef.current) {
-        gsap.from('.terms-page p', {
-          y: 40,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: contentRef.current,
-            start: 'top 80%',
-          },
-        });
-      }
+      gsap.from('.terms-page p', {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: '.terms-page',
+          start: 'top 80%',
+        },
+      });
 
       // Optional: ready section animation
       gsap.from('.ready-section', {
@@ -68,6 +71,10 @@ export default function TermsPage() {
 
     return () => {
       ctx.revert();
+      if (smootherRef.current) {
+        smootherRef.current.kill();
+        smootherRef.current = null;
+      }
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
@@ -75,16 +82,16 @@ export default function TermsPage() {
   return (
     <>
       {/* Header stays OUTSIDE smooth-wrapper to remain fixed */}
-      <header className="fixed-header-container">
+      <div className="fixed-header-container">
         <div className="container-xl">
           <Header appear={false} />
         </div>
-      </header>
+      </div>
 
       <div id="smooth-wrapper">
         <div id="smooth-content">
-          <main className="mainContainer" ref={smootherRef}>
-            <section class="terms-page">
+          <main className="mainContainer">
+            <section className="terms-page">
               <h1>Terms &amp; Conditions</h1>
               <h4>Last updated: April 2025</h4>
 
@@ -142,10 +149,7 @@ export default function TermsPage() {
               </p>
             </section>
 
-            <section
-              className="ready-section"
-              style={{ marginBottom: '150px', marginTop: '500px' }}
-            >
+            <section className="ready-section">
               <div className="container-md">
                 <ReadyToStartCard />
               </div>
