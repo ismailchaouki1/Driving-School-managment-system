@@ -62,7 +62,7 @@ export default function BlogPage() {
       <div id="smooth-wrapper">
         <div id="smooth-content" ref={contentRef}>
           <main className="mainContainer">
-            <section className="blogs-section" style={{ marginBottom: '400px' }}>
+            <section className="blogs-section" style={{ marginBottom: '250px' }}>
               <div className="container-md">
                 <BlogSection blogpage={false} />
               </div>
