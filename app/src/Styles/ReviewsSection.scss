@@ -1,7 +1,4 @@
-$main_color: #8cff2e;
-$text_color: white;
-$second_color: #0d0d0d;
-$background: #050505;
+@import '../Styles/App.scss';
 
 /* MAIN SECTION */
 
@@ -33,6 +30,7 @@ $background: #050505;
     font-weight: 200;
     color: $text_color;
     letter-spacing: -1px;
+    color: white;
   }
 }
 
@@ -112,7 +110,7 @@ $background: #050505;
 
 .review-text {
   margin: 0;
-  color: $text_color;
+  color: white;
   font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
   font-weight: 500;
   font-size: 20px;
@@ -143,9 +141,8 @@ $background: #050505;
 
 .review-user span {
   font-size: 18px;
-  opacity: 0.6;
   font-family: 'Manrope-ExtraLight', 'Manrope-Variable', sans-serif;
-  color: $text_color;
+  color: $main_color;
 }
 
 /* ANIMATIONS */

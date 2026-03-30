@@ -1,7 +1,4 @@
-$main_color: #8cff2e;
-$text_color: white;
-$second_color: #0d0d0d;
-$background: #050505;
+@import '../Styles/App.scss';
 
 .howItWorks {
   width: 100%;
@@ -36,6 +33,7 @@ $background: #050505;
   font-weight: 200;
   margin-bottom: 20px;
   letter-spacing: -1px;
+  color: white;
 }
 
 .steps {

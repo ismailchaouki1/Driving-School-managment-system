@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
-import '../Styles/App.scss';
 import '../Styles/Privacy.scss';
 import Header from '../components/Header';
 import Footer from '../components/Footer';

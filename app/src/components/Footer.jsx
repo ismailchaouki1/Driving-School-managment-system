@@ -1,5 +1,4 @@
 import { Link } from 'react-router';
-import '../Styles/App.scss';
 import '../Styles/Footer.scss';
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
 import { useEffect, useRef } from 'react';

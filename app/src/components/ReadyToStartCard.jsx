@@ -1,4 +1,3 @@
-import '../Styles/App.scss';
 import '../Styles/ReadyToStartCard.scss';
 
 export default function ReadyToStartCard() {

@@ -1,5 +1,4 @@
 import '../Styles/Header.scss';
-import '../Styles/App.scss';
 import { useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { Link } from 'react-router';
@@ -21,40 +20,38 @@ export default function Header({ appear = true }) {
     const handleScroll = (e) => {
       const href = e.currentTarget.getAttribute('href');
 
-      // Only trigger if it's an internal hash link
-      if (href.startsWith('#')) {
+      // Only handle hash links (smooth scroll to section)
+      if (href && href.includes('#')) {
         e.preventDefault();
-        const target = document.querySelector(href);
+        const targetId = href.split('#')[1];
+        const target = document.getElementById(targetId);
 
         if (target) {
           gsap.to(window, {
             duration: 1.2,
             scrollTo: {
               y: target,
-              offsetY: 80, // Matches your header height
-              autoKill: true, // Allows user to interrupt scroll
+              offsetY: 80,
+              autoKill: true,
             },
             ease: 'power3.inOut',
           });
+        }
 
-          // Logic to close the mobile menu after clicking
-          const menu = document.querySelector('.navbar-collapse');
-          if (menu.classList.contains('show')) {
-            // If using Bootstrap's JS, trigger the toggle
-            // Or if using a state-based menu, setMenuOpen(false)
-            menu.classList.remove('show');
-
-            // Also reset your hamburger icon state if it has an "open" class
-            const toggler = document.querySelector('.navbar-toggler');
-            toggler.classList.remove('open');
-          }
+        // Close mobile menu if open
+        const menu = document.querySelector('.navbar-collapse');
+        if (menu && menu.classList.contains('show')) {
+          menu.classList.remove('show');
+          setIsOpen(false); // Also update your state
+          const toggler = document.querySelector('.navbar-toggler');
+          if (toggler) toggler.classList.remove('open');
         }
       }
+      // If it's not a hash link, let React Router handle it normally
     };
 
     links.forEach((link) => link.addEventListener('click', handleScroll));
 
-    // Cleanup listeners on unmount
     return () => {
       links.forEach((link) => link.removeEventListener('click', handleScroll));
     };

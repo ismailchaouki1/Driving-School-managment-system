@@ -1,4 +1,3 @@
-import '../Styles/App.scss';
 import '../Styles/FAQ.scss';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';

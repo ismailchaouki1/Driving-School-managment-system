@@ -1,5 +1,4 @@
 import '../Styles/HowItWorks.scss';
-import '../Styles/App.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlay } from '@fortawesome/free-solid-svg-icons';
 import step1 from '../assets/images/1.png';

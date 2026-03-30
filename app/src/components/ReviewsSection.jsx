@@ -1,4 +1,3 @@
-import '../Styles/App.scss';
 import '../Styles/ReviewsSection.scss';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

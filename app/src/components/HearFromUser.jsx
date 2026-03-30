@@ -1,4 +1,3 @@
-import '../Styles/App.scss';
 import '../Styles/HearFromUser.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';

@@ -1,0 +1,11 @@
+import '../../Styles/Vehicles.scss';
+
+const Vehicles = () => {
+  return (
+    <div className="Vehicles">
+      <h1>Vehicles</h1>
+    </div>
+  );
+};
+
+export default Vehicles;

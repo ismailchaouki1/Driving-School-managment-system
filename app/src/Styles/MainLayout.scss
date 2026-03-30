@@ -1,0 +1,551 @@
+// Pages/System/MainLayout.scss
+@import '../Styles/App.scss';
+
+.main-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fa; // Light background for main area
+}
+
+// Sidebar Styles - Keep DARK
+.sidebar {
+  background: $second_color; // Dark background (#0d0d0d)
+  transition: all 0.3s ease;
+  position: fixed;
+  height: 100vh;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba($main_color, 0.1);
+
+  &.open {
+    width: 260px;
+  }
+
+  &.closed {
+    width: 100px;
+
+    .sidebar-header {
+      justify-content: center;
+      padding: 24px 12px;
+    }
+
+    .logo {
+      justify-content: center;
+    }
+
+    .logo-text {
+      display: none;
+    }
+
+    .toggle-btn {
+      display: none;
+    }
+
+    .nav-item span,
+    .user-details,
+    .logout-btn span {
+      display: none;
+    }
+
+    .nav-item {
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .user-info-sidebar {
+      justify-content: center;
+      padding: 8px;
+    }
+
+    .user-avatar-sidebar {
+      margin: 0 auto;
+    }
+
+    .logout-btn {
+      justify-content: center;
+    }
+  }
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 20px;
+  border-bottom: 1px solid rgba($main_color, 0.1);
+  flex-shrink: 0;
+}
+
+.logo {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $second_color;
+}
+
+.logo-text {
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: 'Manrope-Bold', sans-serif;
+  color: white;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $text_color;
+  padding: 6px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba($main_color, 0.1);
+    color: $main_color;
+  }
+}
+
+// Scrollable navigation area
+.sidebar-nav {
+  flex: 1;
+  padding: 20px 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba($main_color, 0.05);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba($main_color, 0.3);
+    border-radius: 10px;
+
+    &:hover {
+      background: $main_color;
+    }
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba($main_color, 0.3) rgba($main_color, 0.05);
+}
+
+.sideBarOpen {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: $text_color;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.2s;
+  margin-bottom: 4px;
+  font-family: 'Manrope-Medium', sans-serif;
+  font-weight: 500;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba($main_color, 0.1);
+    color: $main_color;
+  }
+
+  &.active {
+    background: $main_color;
+    color: $second_color;
+  }
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid rgba($main_color, 0.1);
+  flex-shrink: 0;
+  background: $second_color;
+  margin-top: auto;
+}
+
+.user-info-sidebar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 8px;
+  border-radius: 12px;
+  background: rgba($main_color, 0.05);
+}
+
+.user-avatar-sidebar {
+  width: 40px;
+  height: 40px;
+  background: $main_color;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $second_color;
+  flex-shrink: 0;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .user-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-family: 'Manrope-SemiBold', sans-serif;
+    color: $main_color;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-email {
+    font-size: 0.75rem;
+    font-family: 'Manrope-Regular', sans-serif;
+    color: $text_color;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  border-radius: 10px;
+  color: #ef4444;
+  cursor: pointer;
+  font-family: 'Manrope-Medium', sans-serif;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
+  }
+}
+
+// MAIN CONTENT - LIGHT MODE (Changed to light)
+.main-content {
+  flex: 1;
+  margin-left: 260px;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+  background: #f5f7fa; // Light background
+}
+
+.sidebar.closed ~ .main-content {
+  margin-left: 100px;
+}
+
+// Header - LIGHT MODE
+.main-header {
+  background: white; // Changed from $second_color to white
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb; // Changed to light border
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.header-left h1 {
+  font-size: 1.5rem;
+  font-family: 'Manrope-Bold', sans-serif;
+  color: #1a1f36; // Changed from $main_color to dark text
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+// Search Bar - LIGHT MODE
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f9fafb; // Changed from dark to light
+  padding: 8px 16px;
+  border-radius: 40px;
+  border: 1px solid #e5e7eb; // Changed to light border
+
+  input {
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 0.9rem;
+    width: 200px;
+    font-family: 'Manrope-Regular', sans-serif;
+    color: #1a1f36; // Changed to dark text
+
+    &::placeholder {
+      color: #9ca3af; // Changed to light gray
+    }
+  }
+}
+
+// Notification Button - LIGHT MODE
+.notification-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 10px;
+  color: #6b7280; // Changed from $text_color to gray
+  transition: all 0.2s;
+
+  &:hover {
+    background: #f3f4f6; // Changed to light hover
+    color: $main_color;
+  }
+}
+
+.notification-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  background: #ef4444; // Changed to red
+  border-radius: 50%;
+}
+
+// User Menu - LIGHT MODE
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 40px;
+  transition: all 0.2s;
+  position: relative;
+
+  &:hover {
+    background: #f9fafb; // Changed to light hover
+  }
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  background: $main_color;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $second_color;
+  flex-shrink: 0;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+
+  .user-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    font-family: 'Manrope-SemiBold', sans-serif;
+    color: #1a1f36; // Changed to dark text
+  }
+
+  .user-role {
+    font-size: 0.7rem;
+    font-family: 'Manrope-Regular', sans-serif;
+    color: #6b7280; // Changed to gray
+  }
+}
+
+// User Dropdown - LIGHT MODE
+.user-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: white; // Changed from $second_color to white
+  border: 1px solid #e5e7eb; // Changed to light border
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); // Lighter shadow
+  padding: 8px;
+  min-width: 160px;
+  z-index: 100;
+
+  button {
+    width: 100%;
+    padding: 10px 16px;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Manrope-Regular', sans-serif;
+    color: #1a1f36; // Changed to dark text
+    transition: all 0.2s;
+
+    &:hover {
+      background: #f3f4f6; // Changed to light hover
+      color: $main_color;
+    }
+  }
+}
+
+.content-area {
+  padding: 32px;
+  background: #f5f7fa; // Light background
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 100px;
+
+    &.open {
+      width: 100px;
+    }
+  }
+
+  .main-content {
+    margin-left: 100px;
+  }
+
+  .sidebar.closed ~ .main-content {
+    margin-left: 100px;
+  }
+
+  .sidebar .logo-text,
+  .sidebar .nav-item span,
+  .sidebar .user-details,
+  .sidebar .logout-btn span {
+    display: none;
+  }
+
+  .sidebar .sidebar-header {
+    justify-content: center;
+    padding: 24px 12px;
+  }
+
+  .sidebar .logo {
+    justify-content: center;
+  }
+
+  .sidebar .toggle-btn {
+    display: none;
+  }
+
+  .sidebar .nav-item {
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .sidebar .user-info-sidebar {
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .sidebar .user-avatar-sidebar {
+    margin: 0 auto;
+  }
+
+  .sidebar .logout-btn {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-header {
+    padding: 12px 16px;
+  }
+
+  .content-area {
+    padding: 16px;
+  }
+
+  .header-left h1 {
+    font-size: 1.2rem;
+  }
+
+  .header-right .search-bar {
+    display: none;
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .user-menu {
+    padding: 6px;
+  }
+}
+
+// Fix for mobile when sidebar is open
+@media (max-width: 640px) {
+  .sidebar.open {
+    width: 260px;
+
+    .logo-text,
+    .nav-item span,
+    .user-details,
+    .logout-btn span {
+      display: block;
+    }
+
+    .sidebar-header {
+      justify-content: space-between;
+      padding: 24px 20px;
+    }
+
+    .logo {
+      justify-content: flex-start;
+    }
+
+    .toggle-btn {
+      display: block;
+    }
+
+    .nav-item {
+      justify-content: flex-start;
+      padding: 12px 16px;
+    }
+
+    .user-info-sidebar {
+      justify-content: flex-start;
+      padding: 8px;
+    }
+
+    .user-avatar-sidebar {
+      margin: 0;
+    }
+
+    .logout-btn {
+      justify-content: flex-start;
+    }
+  }
+}

@@ -1,7 +1,4 @@
-$main_color: #8cff2e;
-$text_color: white;
-$second_color: #0d0d0d;
-$background: #050505;
+@import '../Styles/App.scss';
 
 // Body
 body {
@@ -47,7 +44,7 @@ body {
 
 // Hero Title
 .hero-title {
-  color: $text_color;
+  color: white;
   font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
   font-weight: 500;
   text-align: center;

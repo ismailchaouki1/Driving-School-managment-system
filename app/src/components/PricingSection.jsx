@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import '../Styles/App.scss';
 import '../Styles/PricingSection.scss';
 import gsap from 'gsap';
 

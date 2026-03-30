@@ -1,4 +1,3 @@
-import '../Styles/App.scss';
 import '../Styles/BlogSection.scss';
 import BlogCard from './blogCard';
 import { useContext, useEffect, useRef } from 'react';

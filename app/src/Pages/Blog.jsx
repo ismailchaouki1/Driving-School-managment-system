@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
-import '../Styles/App.scss';
 import '../Styles/Home.scss';
 import Header from '../components/Header';
 import BlogSection from '../components/BlogSection';

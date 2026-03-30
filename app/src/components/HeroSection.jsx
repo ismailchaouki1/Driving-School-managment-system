@@ -1,5 +1,4 @@
 import '../Styles/HeroSection.scss';
-import '../Styles/App.scss';
 import { gsap } from 'gsap';
 import { useRef, useEffect } from 'react';
 import { ScrollTrigger } from 'gsap/all';

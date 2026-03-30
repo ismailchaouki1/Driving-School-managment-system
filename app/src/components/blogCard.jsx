@@ -1,5 +1,4 @@
 import { Link } from 'react-router';
-import '../Styles/App.scss';
 import '../Styles/blogCard.scss';
 export default function BlogCard({ id, badge, title, img }) {
   return (

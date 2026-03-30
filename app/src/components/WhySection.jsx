@@ -1,4 +1,3 @@
-import '../Styles/App.scss';
 import '../Styles/Why.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faCircleXmark } from '@fortawesome/free-regular-svg-icons';
