@@ -17,7 +17,7 @@ import {
   ChevronDown,
   ChartArea,
 } from 'lucide-react';
-import '../../Styles/MainLayout.scss';
+import '../../Styles/System/MainLayout.scss';
 
 const MainLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);

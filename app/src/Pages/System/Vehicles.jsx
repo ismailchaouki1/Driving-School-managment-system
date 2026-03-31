@@ -1,4 +1,4 @@
-import '../../Styles/Vehicles.scss';
+import '../../Styles/System/Vehicles.scss';
 
 const Vehicles = () => {
   return (

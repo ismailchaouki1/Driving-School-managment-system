@@ -1,4 +1,4 @@
-import '../../Styles/Sessions.scss';
+import '../../Styles/System/Sessions.scss';
 
 const Sessions = () => {
   return (

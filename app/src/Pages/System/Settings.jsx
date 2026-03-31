@@ -1,4 +1,4 @@
-import '../../Styles/Settings.scss';
+import '../../Styles/System/Settings.scss';
 
 const Settings = () => {
   return (

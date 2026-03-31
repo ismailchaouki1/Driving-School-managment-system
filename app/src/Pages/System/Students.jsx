@@ -1,4 +1,4 @@
-import '../../Styles/Students.scss';
+import '../../Styles/System/Students.scss';
 
 const Students = () => {
   return (

@@ -1,4 +1,4 @@
-import '../../Styles/Payments.scss';
+import '../../Styles/System/Payments.scss';
 
 const Payments = () => {
   return (
