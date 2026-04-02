@@ -1,4 +1,4 @@
-// Calendar.jsx - Updated with working week and day views
+// Calendar.jsx - Updated with notification handling
 import { useState } from 'react';
 import {
   ChevronLeft,
@@ -24,6 +24,7 @@ import {
   RefreshCw,
   FileText,
 } from 'lucide-react';
+import { useNotifications } from '../../contexts/NotificationContext';
 import '../../Styles/System/Calendar.scss';
 
 /* ─────────────── Mock Data (Same as Sessions) ─────────────── */
@@ -732,6 +733,8 @@ const Calendar = () => {
   const [filterType, setFilterType] = useState('All');
   const [filterInstructor, setFilterInstructor] = useState('All');
 
+  const { addNotification } = useNotifications();
+
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3000);
@@ -843,21 +846,44 @@ const Calendar = () => {
   };
 
   const handleSaveSession = (data) => {
-    if (data.id && sessions.find((s) => s.id === data.id)) {
+    const isNew = !data.id || !sessions.find((s) => s.id === data.id);
+
+    if (isNew) {
+      const newSession = { ...data, id: Date.now(), created_at: new Date().toISOString() };
+      setSessions((s) => [...s, newSession]);
+
+      // Add notification for new session
+      addNotification(
+        'New Session Scheduled',
+        `${data.student_name} has scheduled a ${data.type} session on ${data.date} at ${data.start_time}`,
+        'session',
+      );
+
+      showToast('Session scheduled successfully');
+    } else {
       setSessions((s) => s.map((x) => (x.id === data.id ? data : x)));
       showToast('Session updated successfully');
-    } else {
-      setSessions((s) => [...s, { ...data, id: Date.now(), created_at: new Date().toISOString() }]);
-      showToast('Session scheduled successfully');
     }
+
     setShowModal(false);
     setEditSession(null);
   };
 
   const handleDeleteSession = (id) => {
+    const deletedSession = sessions.find((s) => s.id === id);
     setSessions((s) => s.filter((x) => x.id !== id));
     setDeleteTarget(null);
     setSelectedSession(null);
+
+    // Add notification for deleted session
+    if (deletedSession) {
+      addNotification(
+        'Session Cancelled',
+        `${deletedSession.student_name}'s ${deletedSession.type} session on ${deletedSession.date} has been cancelled`,
+        'system',
+      );
+    }
+
     showToast('Session deleted', 'error');
   };
 
