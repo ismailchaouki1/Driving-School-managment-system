@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->string('reference')->unique();
-
+             $table->string('method')->default('Cash')->after('status');
             // Foreign keys (nullable for flexibility)
             $table->foreignId('student_id')->nullable()->constrained('students')->onDelete('set null');
             $table->foreignId('session_id')->nullable()->constrained('driving_sessions')->onDelete('set null');
@@ -62,5 +62,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('payments');
+        Schema::table('payments', function (Blueprint $table) {
+            $table->dropColumn('method');
+        });
     }
 };

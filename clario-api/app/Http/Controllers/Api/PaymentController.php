@@ -49,6 +49,9 @@ class PaymentController extends Controller
         try {
             $data = $request->all();
 
+            if (!isset($data['method']) || empty($data['method'])) {
+                $data['method'] = 'Cash';
+            }
             // Auto-calculate remaining
             $data['amount_remaining'] = $data['amount_total'] - $data['amount_paid'];
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\InstructorController;
 use App\Http\Controllers\Api\VehicleController;
 use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\PaymentController;  // ← ADD THIS
+use App\Http\Controllers\Api\StatisticsController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -48,6 +49,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sessions/export/excel', [SessionController::class, 'exportExcel']);
     Route::get('/sessions/export/pdf', [SessionController::class, 'exportPdf']);
     Route::get('/sessions/{session}/receipt', [SessionController::class, 'printReceipt']);
+    // Session real-time status routes
+    Route::get('/sessions/real-time', [SessionController::class, 'getSessionsWithRealTimeStatus']);
+    Route::post('/sessions/update-status', [SessionController::class, 'updateStatusBasedOnTime']);
+    Route::post('/sessions/{id}/start', [SessionController::class, 'startSession']);
+    Route::post('/sessions/{id}/complete', [SessionController::class, 'completeSession']);
 
     // ==================== PAYMENT ROUTES ====================
     Route::apiResource('payments', PaymentController::class);
@@ -55,4 +61,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/payments/export/pdf', [PaymentController::class, 'exportPdf']);
     Route::get('/payments/{id}/receipt', [PaymentController::class, 'exportReceipt']);
 
+
+    // ==================== STATISTICS ROUTES ====================
+     Route::get('/statistics/dashboard', [StatisticsController::class, 'getDashboardStats']);
+    Route::get('/statistics/revenue-trends', [StatisticsController::class, 'getRevenueTrends']);
+    Route::get('/statistics/session-analytics', [StatisticsController::class, 'getSessionAnalytics']);
+    Route::get('/statistics/student-registrations', [StatisticsController::class, 'getStudentRegistrations']);
+    Route::get('/statistics/export-excel', [StatisticsController::class, 'exportExcel']);;
+     Route::get('/statistics/export-pdf', [StatisticsController::class, 'exportPdf']);
 });

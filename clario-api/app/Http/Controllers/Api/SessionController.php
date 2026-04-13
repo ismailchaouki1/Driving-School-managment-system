@@ -92,13 +92,13 @@ class SessionController extends Controller
             Log::info('Session created with ID: ' . $session->id);
 
             // ========== CREATE PAYMENT FOR WALK-IN OR REGISTERED STUDENT WITH PAID STATUS ==========
-            // ALWAYS CREATE PAYMENT WHEN payment_status IS 'Paid'
+            $payment = null;
+
             if ($validated['payment_status'] === 'Paid' && $validated['price'] > 0) {
                 Log::info('Creating payment for session...');
 
-                // Get next payment ID for reference
-                $paymentCount = DB::table('payments')->count() + 1;
-                $reference = 'PAY-' . date('Y') . '-' . str_pad($paymentCount, 3, '0', STR_PAD_LEFT);
+                // Generate unique reference with retry logic
+                $reference = $this->generateUniquePaymentReference();
                 $receiptNumber = 'RCP-SESS-' . str_pad($session->id, 6, '0', STR_PAD_LEFT);
 
                 // Generate CIN for walk-in students
@@ -148,7 +148,9 @@ class SessionController extends Controller
                 $instructor = Instructor::find($session->instructor_id);
                 if ($instructor) {
                     $instructor->increment('sessions_count');
-                    $instructor->increment('revenue', $session->price);
+                    if ($payment) {
+                        $instructor->increment('revenue', $session->price);
+                    }
 
                     $completedSessions = Session::where('instructor_id', $instructor->id)
                         ->where('status', 'Completed')
@@ -178,9 +180,9 @@ class SessionController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Session created successfully' . (isset($payment) ? ' with payment record' : ''),
+                'message' => 'Session created successfully' . ($payment ? ' with payment record' : ''),
                 'data' => $session,
-                'payment_created' => isset($payment) ? true : false
+                'payment_created' => $payment ? true : false
             ], 201);
 
         } catch (\Exception $e) {
@@ -193,6 +195,44 @@ class SessionController extends Controller
                 'message' => 'Failed to create session: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Generate a unique payment reference
+     */
+    private function generateUniquePaymentReference()
+    {
+        $year = date('Y');
+        $maxAttempts = 10;
+
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            // Get the latest payment ID and add 1
+            $lastPayment = Payment::orderBy('id', 'desc')->first();
+            $nextNumber = ($lastPayment ? $lastPayment->id + 1 : 1);
+            $reference = 'PAY-' . $year . '-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
+            // Check if reference exists
+            $exists = Payment::where('reference', $reference)->exists();
+
+            if (!$exists) {
+                return $reference;
+            }
+
+            // If exists, try with a random number
+            $randomRef = 'PAY-' . $year . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+            $exists = Payment::where('reference', $randomRef)->exists();
+
+            if (!$exists) {
+                return $randomRef;
+            }
+
+            // Last resort: use timestamp
+            $timestampRef = 'PAY-' . $year . '-' . date('YmdHis');
+            return $timestampRef;
+        }
+
+        // Final fallback
+        return 'PAY-' . $year . '-' . time();
     }
 
     /**
@@ -640,6 +680,195 @@ class SessionController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Receipt generation failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    /**
+     * Update session status based on current time
+     */
+    public function updateStatusBasedOnTime()
+    {
+        try {
+            $currentTime = now();
+            $currentDate = $currentTime->toDateString();
+            $currentTimeString = $currentTime->format('H:i:s');
+
+            // Get all sessions that are scheduled or in progress
+            $sessions = Session::whereIn('status', ['Scheduled', 'In Progress'])
+                ->where('date', '<=', $currentDate)
+                ->get();
+
+            $updatedCount = 0;
+
+            foreach ($sessions as $session) {
+                $sessionDate = $session->date;
+                $sessionEndTime = $session->end_time;
+                $sessionStartTime = $session->start_time;
+
+                // If session date is in the past, mark as completed
+                if ($sessionDate < $currentDate) {
+                    if ($session->status !== 'Completed') {
+                        $session->status = 'Completed';
+                        $session->save();
+                        $updatedCount++;
+                    }
+                    continue;
+                }
+
+                // If session is today
+                if ($sessionDate == $currentDate) {
+                    // If end time has passed, mark as completed
+                    if ($sessionEndTime <= $currentTimeString) {
+                        if ($session->status !== 'Completed') {
+                            $session->status = 'Completed';
+                            $session->save();
+                            $updatedCount++;
+                        }
+                    }
+                    // If start time has passed but not end time, mark as in progress
+                    elseif ($sessionStartTime <= $currentTimeString && $sessionEndTime > $currentTimeString) {
+                        if ($session->status !== 'In Progress') {
+                            $session->status = 'In Progress';
+                            $session->save();
+                            $updatedCount++;
+                        }
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Updated {$updatedCount} sessions",
+                'updated_count' => $updatedCount
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to update session status: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update session status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get sessions with real-time status
+     */
+    public function getSessionsWithRealTimeStatus()
+    {
+        try {
+            // First update statuses based on current time
+            $this->updateStatusBasedOnTime();
+
+            // Then return all sessions
+            $sessions = DB::table('driving_sessions')
+                ->orderBy('date', 'asc')
+                ->orderBy('start_time', 'asc')
+                ->get();
+
+            $sessions = $sessions->map(function($session) {
+                $session->start_time = date('H:i', strtotime($session->start_time));
+                $session->end_time = date('H:i', strtotime($session->end_time));
+                return $session;
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => $sessions,
+                'current_time' => now()->format('Y-m-d H:i:s')
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to load sessions: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load sessions: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Manually complete a session
+     */
+    public function completeSession($id)
+    {
+        try {
+            $session = Session::findOrFail($id);
+
+            // Check if session can be completed
+            if ($session->status === 'Completed') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Session is already completed'
+                ], 400);
+            }
+
+            if ($session->status === 'Cancelled') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cancelled sessions cannot be completed'
+                ], 400);
+            }
+
+            // Update session status
+            $session->status = 'Completed';
+            $session->save();
+
+            // Update instructor stats
+            if ($session->instructor_id) {
+                $instructor = Instructor::find($session->instructor_id);
+                if ($instructor) {
+                    $completedSessions = Session::where('instructor_id', $instructor->id)
+                        ->where('status', 'Completed')
+                        ->count();
+                    $totalSessions = Session::where('instructor_id', $instructor->id)->count();
+                    $instructor->completion_rate = $totalSessions > 0
+                        ? ($completedSessions / $totalSessions) * 100
+                        : 0;
+                    $instructor->save();
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Session marked as completed',
+                'data' => $session
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to complete session: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to complete session: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Start a session (mark as In Progress)
+     */
+    public function startSession($id)
+    {
+        try {
+            $session = Session::findOrFail($id);
+
+            if ($session->status !== 'Scheduled') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only scheduled sessions can be started'
+                ], 400);
+            }
+
+            $session->status = 'In Progress';
+            $session->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Session started',
+                'data' => $session
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to start session: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to start session: ' . $e->getMessage()
             ], 500);
         }
     }
