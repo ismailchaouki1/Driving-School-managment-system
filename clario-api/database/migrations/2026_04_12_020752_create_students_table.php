@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone');
             $table->text('address')->nullable();
-            $table->string('type'); // B, A, A1, C, D, BE
+            $table->string('type');
             $table->decimal('initial_payment', 10, 2)->default(0);
             $table->decimal('total_price', 10, 2)->default(0);
             $table->enum('payment_status', ['Complete', 'Partial', 'Pending'])->default('Pending');

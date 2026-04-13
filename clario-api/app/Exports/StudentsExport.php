@@ -6,11 +6,11 @@ use App\Models\Student;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class StudentsExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
+class StudentsExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
     protected $students;
 
@@ -27,7 +27,7 @@ class StudentsExport implements FromCollection, WithHeadings, WithMapping, WithS
     public function headings(): array
     {
         return [
-            '#',
+            'ID',
             'First Name',
             'Last Name',
             'CIN',
@@ -36,9 +36,9 @@ class StudentsExport implements FromCollection, WithHeadings, WithMapping, WithS
             'Phone',
             'Address',
             'Category',
-            'Total Price (MAD)',
-            'Initial Payment (MAD)',
-            'Remaining (MAD)',
+            'Total Price (DH)',
+            'Initial Payment (DH)',
+            'Remaining (DH)',
             'Payment Status',
             'Registration Date',
             'Parent Name',

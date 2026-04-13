@@ -9,6 +9,8 @@ class Student extends Model
 {
     use HasFactory;
 
+    protected $table = 'students';
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -27,31 +29,25 @@ class Student extends Model
         'photo',
     ];
 
-    // Optional: Add casts for proper data types
     protected $casts = [
         'age' => 'integer',
         'initial_payment' => 'decimal:2',
         'total_price' => 'decimal:2',
         'registration_date' => 'date',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
-
-    // Optional: Add accessor for full name
-    public function getFullNameAttribute()
+    // Add to Student model
+    public function payments()
     {
-        return "{$this->first_name} {$this->last_name}";
+        return $this->hasMany(Payment::class, 'student_id');
     }
 
-    // Optional: Add scope for filtering by payment status
-    public function scopePaymentStatus($query, $status)
+    public function getTotalPaymentsAttribute()
     {
-        return $query->where('payment_status', $status);
+        return $this->payments()->sum('amount_paid');
     }
 
-    // Optional: Add scope for filtering by category
-    public function scopeCategory($query, $category)
+    public function getOutstandingBalanceAttribute()
     {
-        return $query->where('type', $category);
+        return $this->payments()->sum('amount_remaining');
     }
 }
