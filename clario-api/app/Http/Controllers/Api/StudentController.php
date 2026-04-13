@@ -200,4 +200,17 @@ public function exportPdf(Request $request)
         ], 500);
     }
 }
+public function printReceipt($id)
+{
+    try {
+        $student = Student::findOrFail($id);
+        $pdf = Pdf::loadView('exports.student-receipt', ['student' => $student]);
+        return $pdf->download('receipt_' . $student->cin . '_' . date('Y-m-d') . '.pdf');
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to generate receipt: ' . $e->getMessage()
+        ], 500);
+    }
+}
 }
