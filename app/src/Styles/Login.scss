@@ -213,3 +213,109 @@
     }
   }
 }
+
+// Add these styles to your existing Login.scss
+
+// Error message
+.login__error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  color: #ef4444;
+  font-size: 13px;
+  font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
+}
+
+// Success message
+.login__success {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  color: #22c55e;
+
+  strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: 12px;
+    margin: 0;
+    opacity: 0.9;
+  }
+}
+
+// Secondary button
+.login__submit.secondary {
+  background: transparent;
+  border: 1px solid #222;
+  color: white;
+  box-shadow: none;
+  margin-top: 0;
+
+  &:hover {
+    background: rgba(163, 255, 0, 0.1);
+    border-color: #8cff2e;
+  }
+}
+
+// Login actions
+.login__actions {
+  margin-top: 20px;
+}
+
+// Back to login link
+.back-to-login {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #8cff2e;
+  }
+}
+
+// Spinner animation
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Additional styles for the back button in header
+.login__header .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 13px;
+  margin-bottom: 20px;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #8cff2e;
+  }
+}

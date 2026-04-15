@@ -16,6 +16,8 @@ import Statistics from '../Pages/System/Statistics';
 import Calendar from '../Pages/System/Calendar';
 import { NotificationProvider } from '../contexts/NotificationContext';
 import Instructors from '../Pages/System/Instructors';
+import ForgotPassword from '../Pages/ForgotPassword';
+import ResetPassword from '../Pages/ResetPassword';
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -28,6 +30,8 @@ export default function AppRoutes() {
           <Route path="/privacy-policy" element={<PrivacyPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/system" element={<MainLayout />}>
             <Route index element={<Navigate to="/system/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
