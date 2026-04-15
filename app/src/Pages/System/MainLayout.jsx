@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useNotifications } from '../../contexts/NotificationContext';
-import axios from '../../services/axios'; // Create this file
+import axios from '../../services/axios';
 import {
   LayoutDashboard,
   Users,
@@ -46,8 +46,6 @@ const MainLayout = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
-  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -63,7 +61,8 @@ const MainLayout = () => {
       try {
         return JSON.parse(savedUser);
       } catch (e) {
-        return e;
+        console.log(e);
+        return null;
       }
     }
     return null;
@@ -325,47 +324,6 @@ const MainLayout = () => {
     }
   };
 
-  // Settings Modal Handlers
-  const openSettingsModal = () => {
-    setUserMenuOpen(false);
-    setSettingsModalOpen(true);
-  };
-
-  const closeSettingsModal = () => {
-    setSettingsModalOpen(false);
-  };
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (!darkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-    showToast(`${!darkMode ? 'Dark' : 'Light'} mode activated`, 'success');
-  };
-
-  const updatePreference = async (key, value) => {
-    try {
-      const response = await axios.put('/preferences', {
-        [key]: value,
-      });
-
-      if (response.data.success) {
-        setUserData({
-          ...userData,
-          preferences: {
-            ...userData.preferences,
-            [key]: value,
-          },
-        });
-        showToast('Preferences updated', 'success');
-      }
-    } catch (error) {
-      showToast('Failed to update preferences', 'error' + error);
-    }
-  };
-
   const getInitials = (name) => {
     if (!name) return 'U';
     return name
@@ -395,7 +353,7 @@ const MainLayout = () => {
   }
 
   return (
-    <div className={`main-layout ${darkMode ? 'dark-theme' : ''}`}>
+    <div className={`main-layout`}>
       {/* Toast Notification */}
       {toast && (
         <div className={`toast-notification-main toast-${toast.type}`}>
@@ -532,10 +490,6 @@ const MainLayout = () => {
                   <button onClick={openProfileModal} className="dropdown-item">
                     <UserCircle size={16} />
                     <span>Profile</span>
-                  </button>
-                  <button onClick={openSettingsModal} className="dropdown-item">
-                    <Settings size={16} />
-                    <span>Settings</span>
                   </button>
                   <div className="dropdown-divider"></div>
                   <button onClick={handleLogout} className="dropdown-item logout">
@@ -703,130 +657,6 @@ const MainLayout = () => {
               <button onClick={handleProfileUpdate} className="btn-save" disabled={isUpdating}>
                 <Save size={14} />
                 {isUpdating ? 'Saving...' : 'Save Changes'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Settings Modal */}
-      {settingsModalOpen && (
-        <div
-          className="modal-overlay"
-          onClick={(e) => e.target === e.currentTarget && closeSettingsModal()}
-        >
-          <div className="settings-modal-container">
-            <div className="modal-header">
-              <div className="modal-title">
-                <div className="title-icon">
-                  <Settings size={24} color="#8cff2e" />
-                </div>
-                <div>
-                  <h2>Settings</h2>
-                  <p>Customize your application preferences</p>
-                </div>
-              </div>
-              <button onClick={closeSettingsModal} className="close-btn">
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="modal-body">
-              <div className="settings-section">
-                <div className="section-header">
-                  <Sun size={14} />
-                  <h4>Appearance</h4>
-                </div>
-                <div className="settings-option">
-                  <div className="option-info">
-                    <Moon size={18} />
-                    <div>
-                      <label>Dark Mode</label>
-                      <p>Switch between light and dark theme</p>
-                    </div>
-                  </div>
-                  <button
-                    className={`toggle-switch ${darkMode ? 'active' : ''}`}
-                    onClick={toggleDarkMode}
-                  >
-                    <span className="toggle-slider"></span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="settings-section">
-                <div className="section-header">
-                  <BellRing size={14} />
-                  <h4>Notifications</h4>
-                </div>
-                <div className="settings-option">
-                  <div className="option-info">
-                    <BellRing size={18} />
-                    <div>
-                      <label>Push Notifications</label>
-                      <p>Receive notifications about sessions and updates</p>
-                    </div>
-                  </div>
-                  <button
-                    className={`toggle-switch ${userData.preferences?.notifications !== false ? 'active' : ''}`}
-                    onClick={() =>
-                      updatePreference(
-                        'notifications',
-                        userData.preferences?.notifications === false,
-                      )
-                    }
-                  >
-                    <span className="toggle-slider"></span>
-                  </button>
-                </div>
-                <div className="settings-option">
-                  <div className="option-info">
-                    <Mail size={18} />
-                    <div>
-                      <label>Email Updates</label>
-                      <p>Receive weekly summaries and important updates</p>
-                    </div>
-                  </div>
-                  <button
-                    className={`toggle-switch ${userData.preferences?.emailUpdates !== false ? 'active' : ''}`}
-                    onClick={() =>
-                      updatePreference('emailUpdates', userData.preferences?.emailUpdates === false)
-                    }
-                  >
-                    <span className="toggle-slider"></span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="settings-section">
-                <div className="section-header">
-                  <Globe size={14} />
-                  <h4>Language & Region</h4>
-                </div>
-                <div className="settings-option">
-                  <div className="option-info">
-                    <Globe size={18} />
-                    <div>
-                      <label>Language</label>
-                      <p>Choose your preferred language</p>
-                    </div>
-                  </div>
-                  <select
-                    className="settings-select"
-                    value={userData.preferences?.language || 'en'}
-                    onChange={(e) => updatePreference('language', e.target.value)}
-                  >
-                    <option value="en">English</option>
-                    <option value="fr">Français</option>
-                    <option value="ar">العربية</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div className="modal-footer">
-              <button onClick={closeSettingsModal} className="btn-save">
-                Done
               </button>
             </div>
           </div>
