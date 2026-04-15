@@ -343,7 +343,15 @@ const Dashboard = () => {
 
       // Pending payments (overdue or pending)
       const pendingPayments = payments
-        .filter((p) => p.status === 'Pending' || p.status === 'Overdue')
+        .filter((p) => {
+          // Include payments that are not fully paid
+          const isPending =
+            p.status === 'Pending' || p.status === 'Overdue' || p.status === 'Partial';
+          const hasRemaining = (Number(p.amount_remaining) || 0) > 0;
+          // Exclude expenses (Maintenance and Incident)
+          const isNotExpense = !['Maintenance', 'Incident'].includes(p.type);
+          return isPending && hasRemaining && isNotExpense;
+        })
         .reduce((sum, p) => sum + (Number(p.amount_remaining) || 0), 0);
 
       // Collection rate
