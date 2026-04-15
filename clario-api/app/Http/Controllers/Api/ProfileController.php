@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
@@ -49,8 +50,60 @@ class ProfileController extends Controller
             'success' => true,
             'message' => 'Profile updated successfully',
             'data' => [
-                'user' => $user->only(['id', 'name', 'email', 'phone', 'role'])
+                'user' => $user->only(['id', 'name', 'email', 'phone', 'role', 'avatar', 'created_at'])
             ]
+        ]);
+    }
+
+    /**
+     * Update user avatar/profile picture
+     */
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
+        ]);
+
+        $user = $request->user();
+
+        // Delete old avatar if exists
+        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        // Store new avatar
+        $path = $request->file('avatar')->store('avatars', 'public');
+
+        // Generate URL
+        $user->avatar = Storage::url($path);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Avatar updated successfully',
+            'data' => [
+                'avatar' => $user->avatar
+            ]
+        ]);
+    }
+
+    /**
+     * Remove user avatar
+     */
+    public function removeAvatar(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user->avatar && Storage::disk('public')->exists(str_replace('/storage/', '', $user->avatar))) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $user->avatar));
+        }
+
+        $user->avatar = null;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Avatar removed successfully'
         ]);
     }
 

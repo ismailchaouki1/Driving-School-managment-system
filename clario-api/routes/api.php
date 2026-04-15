@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\InstructorController;
 use App\Http\Controllers\Api\VehicleController;
 use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\PaymentController;  // ← ADD THIS
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\StatisticsController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // ==================== AUTH ROUTES ====================
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::put('/profile', [ProfileController::class, 'update']);
+    Route::put('/preferences', [ProfileController::class, 'updatePreferences']);
 
     // ==================== STUDENT ROUTES ====================
     Route::apiResource('students', StudentController::class);
