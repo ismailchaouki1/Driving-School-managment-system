@@ -1,12 +1,17 @@
+// src/components/SignUp.jsx
 import { useEffect, useRef, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import '../Styles/SignUp.scss';
 import gsap from 'gsap';
 import { Link, useNavigate } from 'react-router-dom';
-import { ScrollSmoother } from 'gsap/ScrollSmoother';
 import axiosInstance from '../services/axios';
 
-const API_URL = 'http://localhost:8000/api';
+// Price configuration
+const prices = {
+  basic: { monthly: 29, yearly: 85 },
+  pro: { monthly: 59, yearly: 150 },
+  enterprise: { monthly: 99, yearly: 210 },
+};
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,7 +25,21 @@ export default function SignUp() {
     email: '',
     password: '',
     password_confirmation: '',
+    plan: 'pro',
+    billing: 'monthly',
   });
+
+  // Get current price based on selected plan and billing
+  const currentPrice = prices[formData.plan][formData.billing];
+  const isYearly = formData.billing === 'yearly';
+  const monthlyEquivalent = isYearly ? (currentPrice / 12).toFixed(2) : null;
+  const savings = isYearly
+    ? Math.round(
+        ((prices[formData.plan].monthly * 12 - currentPrice) /
+          (prices[formData.plan].monthly * 12)) *
+          100,
+      )
+    : 0;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,32 +47,42 @@ export default function SignUp() {
       ...prev,
       [name]: value,
     }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
-    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrors('');
+    setErrors({});
 
     try {
-      const response = await axiosInstance.post('/signup', formData);
+      // Step 1: Create pending user
+      const response = await axiosInstance.post('/signup', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        password_confirmation: formData.password_confirmation,
+        plan: formData.plan,
+        billing: formData.billing,
+      });
 
       if (response.data.success) {
-        // ✅ Store the token immediately
-        localStorage.setItem('token', response.data.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        // Step 2: Create Stripe checkout session
+        const checkoutResponse = await axiosInstance.post('/stripe/create-checkout-session', {
+          email: formData.email,
+        });
 
-        // ✅ Store that user needs subscription
-        localStorage.setItem('requires_subscription', 'true');
-
-        // ✅ Redirect to pricing page to choose plan
-        navigate('/pricing?new=true&from=signup');
+        if (checkoutResponse.data.success) {
+          // Store email for later use
+          localStorage.setItem('pendingEmail', formData.email);
+          // Redirect to Stripe checkout
+          window.location.href = checkoutResponse.data.session_url;
+        } else {
+          setErrors({ general: checkoutResponse.data.message || 'Failed to start checkout' });
+        }
       }
     } catch (err) {
-      setErrors(err.response?.data?.message || 'Signup failed');
+      console.error('Signup error:', err);
+      setErrors({ general: err.response?.data?.message || 'Signup failed' });
     } finally {
       setIsLoading(false);
     }
@@ -64,68 +93,36 @@ export default function SignUp() {
   const subtitleRef = useRef(null);
 
   useEffect(() => {
-    // Check if user is already logged in
     const token = localStorage.getItem('token');
     if (token) {
       navigate('/system/dashboard');
     }
 
     const tl = gsap.timeline();
-    tl.from(badgeRef.current, {
-      y: -20,
-      opacity: 0,
-      duration: 0.6,
-      ease: 'power3.out',
-    })
-      .from(
-        titleRef.current,
-        {
-          y: 40,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power4.out',
-        },
-        '-=0.3',
-      )
-      .from(
-        subtitleRef.current,
-        {
-          y: 20,
-          opacity: 0,
-          duration: 0.1,
-          ease: 'power2.out',
-        },
-        '-=0.4',
-      );
+    tl.from(badgeRef.current, { y: -20, opacity: 0, duration: 0.6, ease: 'power3.out' })
+      .from(titleRef.current, { y: 40, opacity: 0, duration: 0.8, ease: 'power4.out' }, '-=0.3')
+      .from(subtitleRef.current, { y: 20, opacity: 0, duration: 0.1, ease: 'power2.out' }, '-=0.4');
     return () => tl.revert();
   }, [navigate]);
 
-  const handleScroll = () => {
-    const smoother = ScrollSmoother.get();
-    if (smoother) {
-      smoother.scrollTo(0, true);
-    }
+  // Get plan display name
+  const getPlanName = (plan) => {
+    const names = { basic: 'Basic', pro: 'Pro', enterprise: 'Enterprise' };
+    return names[plan];
   };
 
   return (
-    <div className="signup" id="smooth-wrapper">
-      <div className="signup__box" id="smooth-content">
+    <div className="signup">
+      <div className="signup__box">
         <div className="signup__header">
           <span className="signup__badge" ref={badgeRef}>
             Join Us
           </span>
           <h1 ref={titleRef}>Create Your Account</h1>
-          <p ref={subtitleRef}>Sign up and start managing your finances securely</p>
+          <p ref={subtitleRef}>Sign up and start managing your driving school</p>
         </div>
 
-        {errors.general && (
-          <div
-            className="signup__error"
-            style={{ color: '#ef4444', marginBottom: '1rem', textAlign: 'center' }}
-          >
-            {errors.general}
-          </div>
-        )}
+        {errors.general && <div className="signup__error">{errors.general}</div>}
 
         <form className="signup__form" onSubmit={handleSubmit}>
           <div className="signup__field">
@@ -136,12 +133,8 @@ export default function SignUp() {
               placeholder="Full Name"
               value={formData.name}
               onChange={handleChange}
-              className={errors.name ? 'error' : ''}
               required
             />
-            {errors.name && (
-              <span style={{ color: '#ef4444', fontSize: '12px' }}>{errors.name}</span>
-            )}
           </div>
 
           <div className="signup__field">
@@ -152,11 +145,67 @@ export default function SignUp() {
               placeholder="Your Email"
               value={formData.email}
               onChange={handleChange}
-              className={errors.email ? 'error' : ''}
               required
             />
-            {errors.email && (
-              <span style={{ color: '#ef4444', fontSize: '12px' }}>{errors.email}</span>
+          </div>
+
+          {/* Plan Selection with Price Display */}
+          <div className="signup__field">
+            <label>Select Plan</label>
+            <div className="signup__plan-selector">
+              {['basic', 'pro', 'enterprise'].map((plan) => (
+                <div
+                  key={plan}
+                  className={`signup__plan-option ${formData.plan === plan ? 'active' : ''}`}
+                  onClick={() => setFormData((prev) => ({ ...prev, plan }))}
+                >
+                  <div className="signup__plan-name">{getPlanName(plan)}</div>
+                  <div className="signup__plan-price">
+                    ${prices[plan][formData.billing]}
+                    <span>/{formData.billing === 'yearly' ? 'year' : 'month'}</span>
+                  </div>
+                  {formData.plan === plan && <div className="signup__plan-check">✓</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Billing Cycle Toggle */}
+          <div className="signup__field">
+            <label>Billing Cycle</label>
+            <div className="signup__billing-toggle">
+              <button
+                type="button"
+                className={`signup__billing-option ${formData.billing === 'monthly' ? 'active' : ''}`}
+                onClick={() => setFormData((prev) => ({ ...prev, billing: 'monthly' }))}
+              >
+                Monthly
+              </button>
+              <button
+                type="button"
+                className={`signup__billing-option ${formData.billing === 'yearly' ? 'active' : ''}`}
+                onClick={() => setFormData((prev) => ({ ...prev, billing: 'yearly' }))}
+              >
+                Yearly
+                <span className="signup__save-badge">Save {savings}%</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Price Summary */}
+          <div className="signup__price-summary">
+            <div className="signup__price-summary-title">
+              {getPlanName(formData.plan)} Plan -{' '}
+              {formData.billing === 'yearly' ? 'Yearly' : 'Monthly'}
+            </div>
+            <div className="signup__price-summary-amount">
+              ${currentPrice}
+              <span>/{formData.billing === 'yearly' ? 'year' : 'month'}</span>
+            </div>
+            {isYearly && (
+              <div className="signup__price-summary-savings">
+                Just ${monthlyEquivalent}/month, billed annually
+              </div>
             )}
           </div>
 
@@ -169,16 +218,12 @@ export default function SignUp() {
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
-                className={errors.password ? 'error' : ''}
                 required
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            {errors.password && (
-              <span style={{ color: '#ef4444', fontSize: '12px' }}>{errors.password}</span>
-            )}
           </div>
 
           <div className="signup__field">
@@ -199,24 +244,14 @@ export default function SignUp() {
           </div>
 
           <button className="signup__submit" type="submit" disabled={isLoading}>
-            {isLoading ? 'Creating account...' : 'Sign Up'} <span>›</span>
+            {isLoading ? 'Creating account...' : `Sign Up & Pay $${currentPrice}`} <span>›</span>
           </button>
 
-          <div className="signup__divider">
-            <span>Or sign up with</span>
-          </div>
-
           <p className="signup__footer">
-            Already have an account?
-            <span>
-              <Link
-                style={{ textDecoration: 'none', color: '#8cff2e' }}
-                onClick={handleScroll}
-                to={'/login'}
-              >
-                Sign In
-              </Link>
-            </span>
+            Already have an account?{' '}
+            <Link to="/login" style={{ color: '#8cff2e', textDecoration: 'none' }}>
+              Sign In
+            </Link>
           </p>
         </form>
       </div>

@@ -1,0 +1,185 @@
+// src/Styles/PaymentSuccess.scss
+@import './App.scss';
+
+.payment-success {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  padding: 20px;
+
+  &__container {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  &__card {
+    background: #0a0a0a;
+    border-radius: 24px;
+    padding: 48px 32px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    &.success {
+      border-color: rgba(163, 255, 0, 0.2);
+    }
+
+    &.error {
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    h2 {
+      font-size: 28px;
+      font-weight: 600;
+      margin: 24px 0 12px;
+      font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
+      color: #fff;
+    }
+
+    p {
+      font-size: 15px;
+      color: $text_color;
+      line-height: 1.5;
+      font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
+      margin-bottom: 8px;
+    }
+  }
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  &__redirect {
+    font-size: 13px;
+    color: #666;
+    margin-top: 16px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 32px;
+  }
+}
+
+// Success icon
+.success-icon {
+  svg {
+    stroke: $main_color;
+    stroke-width: 2;
+  }
+}
+
+// Error icon
+.error-icon {
+  svg {
+    stroke: #ef4444;
+    stroke-width: 2;
+  }
+}
+
+// Spinner
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(163, 255, 0, 0.2);
+  border-top-color: $main_color;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+// Buttons (matching your login/signup buttons)
+.btn {
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+
+  &-primary {
+    background: $main_color;
+    color: #000;
+
+    &:hover {
+      background: #b4ff20;
+      transform: translateY(-1px);
+    }
+  }
+
+  &-secondary {
+    background: transparent;
+    border: 1px solid #222;
+    color: #fff;
+
+    &:hover {
+      background: rgba(163, 255, 0, 0.1);
+      border-color: $main_color;
+      color: $main_color;
+    }
+  }
+}
+
+// Animations
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .payment-success {
+    padding: 16px;
+
+    &__card {
+      padding: 32px 20px;
+
+      h2 {
+        font-size: 24px;
+      }
+    }
+
+    &__icon {
+      width: 56px;
+      height: 56px;
+
+      svg {
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    &__actions {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      width: 100%;
+    }
+  }
+
+  .spinner {
+    width: 28px;
+    height: 28px;
+  }
+}

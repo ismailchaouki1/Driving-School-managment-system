@@ -1,63 +1,58 @@
+// src/components/Login.jsx
 import { useEffect, useRef, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import '../Styles/Login.scss';
 import gsap from 'gsap';
-import { ScrollSmoother } from 'gsap/ScrollSmoother';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/api';
+import axiosInstance from '../services/axios';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const [rememberMe, setRememberMe] = useState(false);
 
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    remember: false,
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value,
     }));
-    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setErrors({});
 
     try {
-      const response = await axios.post(`${API_URL}/login`, {
+      const response = await axiosInstance.post('/login', {
         email: formData.email,
         password: formData.password,
       });
 
       if (response.data.success) {
-        // Store token and user data
         localStorage.setItem('token', response.data.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.data.user));
-
-        // Optional: Set authorization header for future requests
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.data.token}`;
-
-        // Redirect to dashboard
         navigate('/system/dashboard');
       }
     } catch (err) {
-      if (err.response?.data?.errors) {
-        setError(err.response.data.errors.email?.[0] || 'Invalid credentials');
-      } else if (err.response?.data?.message) {
-        setError(err.response.data.message);
+      console.error('Login error:', err);
+      if (err.response?.status === 403) {
+        setErrors({
+          general:
+            err.response?.data?.message || 'Please complete payment to activate your account.',
+        });
+      } else if (err.response?.status === 422) {
+        setErrors({ general: 'Invalid email or password' });
       } else {
-        setError('Login failed. Please try again.');
+        setErrors({ general: 'Login failed. Please try again.' });
       }
     } finally {
       setIsLoading(false);
@@ -105,40 +100,26 @@ export default function Login() {
     return () => tl.revert();
   }, [navigate]);
 
-  const handleScroll = () => {
-    const smoother = ScrollSmoother.get();
-    if (smoother) {
-      smoother.scrollTo(0, true);
-    }
-  };
-
   return (
-    <div className="login" id="smooth-wrapper">
-      <div className="login__box" id="smooth-content">
+    <div className="login">
+      <div className="login__box">
         <div className="login__header">
           <span className="login__badge" ref={badgeRef}>
             Welcome Back
           </span>
-          <h1 ref={titleRef}>Sign in to your account</h1>
-          <p ref={subtitleRef}>Access your financial dashboard and insights</p>
+          <h1 ref={titleRef}>Sign In</h1>
+          <p ref={subtitleRef}>Access your driving school dashboard</p>
         </div>
 
-        {error && (
-          <div
-            className="login__error"
-            style={{ color: '#ef4444', marginBottom: '1rem', textAlign: 'center' }}
-          >
-            {error}
-          </div>
-        )}
+        {errors.general && <div className="login__error">{errors.general}</div>}
 
         <form className="login__form" onSubmit={handleSubmit}>
           <div className="login__field">
-            <label>Email Address</label>
+            <label>Email</label>
             <input
               type="email"
               name="email"
-              placeholder="Enter your email"
+              placeholder="Your Email"
               value={formData.email}
               onChange={handleChange}
               required
@@ -151,7 +132,7 @@ export default function Login() {
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
-                placeholder="Enter your password"
+                placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
                 required
@@ -163,17 +144,16 @@ export default function Login() {
           </div>
 
           <div className="login__options">
-            <label className="login__remember" style={{ color: 'white' }}>
+            <label className="login__remember">
               <input
                 type="checkbox"
-                name="remember"
-                checked={formData.remember}
-                onChange={handleChange}
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
               />
-              Remember me
+              <span>Remember me</span>
             </label>
-            <Link to={'/forgot-password'}>
-              <a href="#">Forgot Password?</a>
+            <Link to="/forgot-password" className="login__forgot">
+              Forgot Password?
             </Link>
           </div>
 
@@ -181,21 +161,11 @@ export default function Login() {
             {isLoading ? 'Signing in...' : 'Sign In'} <span>›</span>
           </button>
 
-          <div className="login__divider">
-            <span>Or continue with</span>
-          </div>
-
           <p className="login__footer">
-            Don't have an account?
-            <span>
-              <Link
-                style={{ textDecoration: 'none', color: '#8cff2e' }}
-                onClick={handleScroll}
-                to={'/signup'}
-              >
-                Sign up
-              </Link>
-            </span>
+            Don't have an account?{' '}
+            <Link to="/signup" style={{ textDecoration: 'none', color: '#8cff2e' }}>
+              Sign Up
+            </Link>
           </p>
         </form>
       </div>

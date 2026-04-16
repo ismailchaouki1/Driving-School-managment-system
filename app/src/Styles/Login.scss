@@ -1,4 +1,5 @@
 @import '../Styles/App.scss';
+
 .login {
   min-height: 100vh;
   display: flex;
@@ -9,6 +10,7 @@
   &__box {
     width: 100%;
     max-width: 420px;
+    padding: 20px;
   }
 
   &__header {
@@ -37,7 +39,6 @@
     font-size: 13px;
     color: $main_color;
     font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
-
     border: 1px solid rgba(163, 255, 0, 0.4);
     background: rgba(163, 255, 0, 0.1);
   }
@@ -57,20 +58,28 @@
       margin-bottom: 6px;
       font-size: 14px;
       color: white;
+      font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
     }
 
     input {
       height: 48px;
       border-radius: 10px;
       padding: 0 14px;
-
       background: #111;
       border: 1px solid #222;
       color: white;
+      font-size: 15px;
+      font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
+      transition: all 0.3s ease;
 
       &:focus {
-        border-color: #333;
+        border-color: $main_color;
         outline: none;
+        background: #161616;
+      }
+
+      &::placeholder {
+        color: #555;
       }
     }
   }
@@ -92,6 +101,14 @@
       border: none;
       color: #888;
       cursor: pointer;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        color: $main_color;
+      }
     }
   }
 
@@ -100,10 +117,18 @@
     justify-content: space-between;
     align-items: center;
     font-size: 14px;
+    margin-top: -5px;
 
     a {
-      color: #a3ff00;
+      color: $main_color;
       text-decoration: none;
+      font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
+      transition: opacity 0.3s ease;
+
+      &:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+      }
     }
   }
 
@@ -111,10 +136,29 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #9ca3af;
+    color: $text_color;
+    cursor: pointer;
+    font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
 
     input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      cursor: pointer;
       accent-color: $main_color;
+
+      &:checked {
+        background-color: $main_color;
+        border-color: $main_color;
+      }
+    }
+
+    span {
+      user-select: none;
+
+      &:hover {
+        color: white;
+      }
     }
   }
 
@@ -122,36 +166,58 @@
     height: 50px;
     border-radius: 10px;
     border: none;
-    font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
-    text-decoration: none;
+    font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
     background: $main_color;
     color: black;
     font-weight: 600;
     font-size: 15px;
-
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 6px;
-
     cursor: pointer;
-
     box-shadow: 0 0 25px rgba(163, 255, 0, 0.4);
+    transition: all 0.3s ease;
 
     &:hover {
       background: #b4ff20;
+      transform: translateY(-1px);
+      box-shadow: 0 0 35px rgba(163, 255, 0, 0.5);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    span {
+      font-size: 18px;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover span {
+      transform: translateX(3px);
     }
   }
 
   &__divider {
     position: relative;
     text-align: center;
+    margin: 5px 0;
 
     span {
       padding: 0 12px;
       color: $text_color;
       background: #000;
-      font-size: 14px;
+      font-size: 13px;
+      font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
+      position: relative;
+      z-index: 1;
     }
 
     &::before {
@@ -162,7 +228,7 @@
       width: 100%;
       height: 1px;
       background: #222;
-      z-index: -1;
+      z-index: 0;
     }
   }
 
@@ -175,18 +241,16 @@
     flex: 1;
     height: 48px;
     border-radius: 10px;
-
     border: 1px solid #222;
     background: #111;
     color: white;
     font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
-
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-
     cursor: pointer;
+    transition: all 0.3s ease;
 
     img,
     svg {
@@ -196,6 +260,7 @@
 
     &:hover {
       background: #181818;
+      border-color: #333;
     }
   }
 
@@ -203,119 +268,174 @@
     text-align: center;
     font-size: 14px;
     color: $text_color;
+    font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
 
+    a,
     span {
       color: $main_color;
       cursor: pointer;
+      text-decoration: none;
+      font-family: 'Manrope-SemiBold', 'Manrope-Variable', sans-serif;
+      transition: opacity 0.3s ease;
+
+      &:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+      }
     }
+
     @media (max-width: 768px) {
       margin-bottom: 40px;
     }
   }
-}
 
-// Add these styles to your existing Login.scss
-
-// Error message
-.login__error {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 10px;
-  padding: 12px 16px;
-  margin-bottom: 20px;
-  color: #ef4444;
-  font-size: 13px;
-  font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
-}
-
-// Success message
-.login__success {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  border-radius: 10px;
-  padding: 14px 16px;
-  margin-bottom: 20px;
-  color: #22c55e;
-
-  strong {
-    display: block;
+  // Error message
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    color: #ef4444;
     font-size: 13px;
-    margin-bottom: 4px;
+    font-family: 'Manrope-Medium', 'Manrope-Variable', sans-serif;
+
+    svg {
+      flex-shrink: 0;
+    }
   }
 
-  p {
-    font-size: 12px;
-    margin: 0;
-    opacity: 0.9;
+  // Success message
+  &__success {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    color: #22c55e;
+
+    strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    p {
+      font-size: 12px;
+      margin: 0;
+      opacity: 0.9;
+    }
   }
-}
 
-// Secondary button
-.login__submit.secondary {
-  background: transparent;
-  border: 1px solid #222;
-  color: white;
-  box-shadow: none;
-  margin-top: 0;
+  // Secondary button (for continue payment)
+  &__submit.secondary {
+    background: transparent;
+    border: 1px solid #333;
+    color: white;
+    box-shadow: none;
+    margin-top: 0;
 
-  &:hover {
+    &:hover {
+      background: rgba(163, 255, 0, 0.1);
+      border-color: $main_color;
+      color: $main_color;
+      transform: translateY(-1px);
+    }
+  }
+
+  // Login actions container
+  &__actions {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  // Continue payment button
+  &__continue-payment {
     background: rgba(163, 255, 0, 0.1);
-    border-color: #8cff2e;
+    border: 1px solid rgba(163, 255, 0, 0.3);
+    color: $main_color;
+
+    &:hover {
+      background: rgba(163, 255, 0, 0.15);
+      border-color: $main_color;
+    }
+  }
+
+  // Back to login link
+  &__back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #9ca3af;
+    text-decoration: none;
+    font-size: 13px;
+    font-family: 'Manrope-Regular', 'Manrope-Variable', sans-serif;
+    transition: color 0.2s ease;
+    margin-bottom: 20px;
+
+    &:hover {
+      color: $main_color;
+    }
   }
 }
 
-// Login actions
-.login__actions {
-  margin-top: 20px;
-}
+// Responsive
+@media (max-width: 480px) {
+  .login {
+    &__box {
+      padding: 16px;
+    }
 
-// Back to login link
-.back-to-login {
-  color: #9ca3af;
-  text-decoration: none;
-  font-size: 13px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: color 0.2s ease;
+    &__header {
+      h1 {
+        font-size: 28px;
+      }
+    }
 
-  &:hover {
-    color: #8cff2e;
+    &__options {
+      font-size: 12px;
+    }
+
+    &__remember {
+      span {
+        font-size: 12px;
+      }
+    }
   }
 }
 
-// Spinner animation
+// Animation for the remember me checkbox
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+// Loading spinner for submit button
 .spinner {
-  animation: spin 1s linear infinite;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
   to {
     transform: rotate(360deg);
-  }
-}
-
-// Additional styles for the back button in header
-.login__header .back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: #9ca3af;
-  text-decoration: none;
-  font-size: 13px;
-  margin-bottom: 20px;
-  transition: color 0.2s ease;
-
-  &:hover {
-    color: #8cff2e;
   }
 }
