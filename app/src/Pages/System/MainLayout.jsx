@@ -39,6 +39,7 @@ import {
   BriefcaseBusiness,
   Loader,
   Trash2,
+  RefreshCw,
 } from 'lucide-react';
 import '../../Styles/System/MainLayout.scss';
 
@@ -49,7 +50,10 @@ const MainLayout = () => {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
-  const { notifications, markAsRead, markAllAsRead, getUnreadCount } = useNotifications();
+
+  // ✅ Single useNotifications call
+  const { notifications, markAsRead, markAllAsRead, getUnreadCount, refreshPaymentStatus } =
+    useNotifications();
   const fileInputRef = useRef(null);
 
   const location = useLocation();
@@ -188,6 +192,8 @@ const MainLayout = () => {
         return <CalendarIcon size={14} />;
       case 'payment':
         return <CheckCircle size={14} />;
+      case 'urgent':
+        return <AlertCircle size={14} />;
       case 'reminder':
         return <Clock size={14} />;
       default:
@@ -232,14 +238,12 @@ const MainLayout = () => {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
       showToast('Please select a valid image file (JPEG, PNG, JPG, GIF)', 'error');
       return;
     }
 
-    // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
       showToast('Image size must be less than 2MB', 'error');
       return;
@@ -256,7 +260,6 @@ const MainLayout = () => {
       });
 
       if (response.data.success) {
-        // Update user data
         const updatedUser = { ...userData, avatar: response.data.data.avatar };
         setUserData(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -341,7 +344,6 @@ const MainLayout = () => {
         phone: editProfileForm.phone,
       };
 
-      // Add password if changing
       if (editProfileForm.newPassword) {
         updateData.current_password = editProfileForm.currentPassword;
         updateData.password = editProfileForm.newPassword;
@@ -351,7 +353,6 @@ const MainLayout = () => {
       const response = await axios.put('/profile', updateData);
 
       if (response.data.success) {
-        // Update local user data
         const updatedUser = { ...userData, ...response.data.data.user };
         setUserData(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -462,6 +463,18 @@ const MainLayout = () => {
             </h1>
           </div>
           <div className="header-right">
+            {/* Refresh Button */}
+            <button
+              className="refresh-btn"
+              onClick={() => {
+                refreshPaymentStatus();
+                showToast('Checking for pending payments...', 'info');
+              }}
+              title="Check pending payments"
+            >
+              <RefreshCw size={18} />
+            </button>
+
             {/* Notifications Container */}
             <div className="notification-container">
               <button
@@ -585,6 +598,13 @@ const MainLayout = () => {
                   )}
                 </div>
                 <div className="avatar-actions">
+                  <button
+                    className="upload-avatar-btn"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Camera size={16} />
+                    Change Photo
+                  </button>
                   <input
                     type="file"
                     ref={fileInputRef}
