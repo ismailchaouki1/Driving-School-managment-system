@@ -28,6 +28,7 @@ import {
   Grid,
   List,
   Loader,
+  History,
 } from 'lucide-react';
 import { useNotifications } from '../../contexts/NotificationContext';
 import axios from '../../services/axios';
@@ -95,11 +96,20 @@ const getRandomGradient = (id) => {
 };
 
 // Card Component
-const StudentCard = ({ student, onEdit, onDelete, onPrint, onView }) => {
+const StudentCard = ({
+  student,
+  onEdit,
+  onDelete,
+  onPrint,
+  onView,
+  onAddPayment,
+  onViewHistory,
+}) => {
   const [expanded, setExpanded] = useState(false);
-  const paid = Number(student.initial_payment || 0);
+  const paid = student.total_paid || Number(student.initial_payment || 0);
   const total = Number(student.total_price) || 1;
-  const pct = Math.min(100, Math.round((paid / total) * 100));
+  const pct = total > 0 ? Math.min(100, Math.round((paid / total) * 100)) : 0;
+  const remaining = total - paid; // ✅ Add this line
 
   return (
     <div className={`student-card ${expanded ? 'expanded' : ''}`}>
@@ -157,7 +167,7 @@ const StudentCard = ({ student, onEdit, onDelete, onPrint, onView }) => {
           </div>
           <div className="payment-amounts">
             <span>Paid: {paid.toLocaleString()} MAD</span>
-            <span>Total: {total.toLocaleString()} MAD</span>
+            <span>Remaining: {remaining.toLocaleString()} MAD</span>
           </div>
         </div>
 
@@ -171,6 +181,16 @@ const StudentCard = ({ student, onEdit, onDelete, onPrint, onView }) => {
         <button className="action-btn view" onClick={() => onView(student)}>
           <Eye size={14} />
           <span>View</span>
+        </button>
+        {student.payment_status !== 'Complete' && (
+          <button className="action-btn payment" onClick={() => onAddPayment(student)}>
+            <CreditCard size={14} />
+            <span>Pay</span>
+          </button>
+        )}
+        <button className="action-btn history" onClick={() => onViewHistory(student)}>
+          <History size={14} />
+          <span>History</span>
         </button>
         <button className="action-btn print" onClick={() => onPrint(student)}>
           <Printer size={14} />
@@ -609,7 +629,215 @@ const KpiCard = ({ icon, label, value, trend, trendValue }) => (
     </div>
   </div>
 );
+/* ─────────────── Add Payment Modal ─────────────── */
+const AddPaymentModal = ({ student, onClose, onSave, isSaving }) => {
+  const [amount, setAmount] = useState('');
+  const [method, setMethod] = useState('Cash');
+  const [notes, setNotes] = useState('');
+  const [errors, setErrors] = useState({});
 
+  const totalPaid = student?.total_paid || 0;
+  const totalPrice = student?.total_price || 0;
+  const remainingBalance = totalPrice - totalPaid;
+
+  const handleSave = () => {
+    const e = {};
+    if (!amount || amount <= 0) e.amount = 'Amount is required and must be greater than 0';
+    if (amount > remainingBalance)
+      e.amount = `Amount cannot exceed remaining balance (${remainingBalance.toLocaleString()} MAD)`;
+
+    if (Object.keys(e).length > 0) {
+      setErrors(e);
+      return;
+    }
+
+    onSave({
+      student_id: student.id,
+      amount: parseFloat(amount),
+      method,
+      notes,
+    });
+  };
+
+  return (
+    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal-container" style={{ maxWidth: 500 }}>
+        <div className="modal-header">
+          <div className="modal-title">
+            <div className="title-icon">
+              <CreditCard size={18} color="#8cff2e" />
+            </div>
+            <div>
+              <h2>Add Payment</h2>
+              <p>
+                {student?.first_name} {student?.last_name}
+              </p>
+            </div>
+          </div>
+          <button onClick={onClose} className="close-btn">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="modal-body">
+          <div className="payment-summary">
+            <div className="summary-item">
+              <span>Total Price:</span>
+              <strong>{student?.total_price?.toLocaleString()} MAD</strong>
+            </div>
+            <div className="summary-item">
+              <span>Total Paid:</span>
+              <strong>{totalPaid.toLocaleString()} MAD</strong>
+            </div>
+            <div className="summary-item highlight">
+              <span>Remaining Balance:</span>
+              <strong>{remainingBalance.toLocaleString()} MAD</strong>
+            </div>
+          </div>
+
+          <div className="form-section">
+            <div className="form-field">
+              <label>Amount to Pay (MAD) *</label>
+              <input
+                type="number"
+                step="0.01"
+                value={amount}
+                onChange={(e) => {
+                  setAmount(e.target.value);
+                  setErrors({});
+                }}
+                placeholder="Enter amount"
+                className={errors.amount ? 'error' : ''}
+              />
+              {errors.amount && <span className="error-message">{errors.amount}</span>}
+            </div>
+
+            <div className="form-field">
+              <label>Payment Method *</label>
+              <select value={method} onChange={(e) => setMethod(e.target.value)}>
+                <option value="Cash">Cash</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Card">Card</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Online">Online</option>
+              </select>
+            </div>
+
+            <div className="form-field">
+              <label>Notes (Optional)</label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Add payment notes..."
+                rows="3"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="modal-footer">
+          <button onClick={onClose} className="btn-cancel">
+            Cancel
+          </button>
+          <button onClick={handleSave} className="btn-save" disabled={isSaving}>
+            {isSaving ? <Loader size={16} className="spinner" /> : null}
+            Add Payment
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────── Payment History Modal ─────────────── */
+const PaymentHistoryModal = ({ student, onClose }) => {
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        const response = await axios.get(`/students/${student.id}/payment-history`);
+        if (response.data.success) {
+          setPayments(response.data.data.payments);
+        }
+      } catch (error) {
+        console.error('Failed to fetch payment history:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPayments();
+  }, [student]);
+
+  return (
+    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal-container" style={{ maxWidth: 600 }}>
+        <div className="modal-header">
+          <div className="modal-title">
+            <div className="title-icon">
+              <History size={18} color="#8cff2e" />
+            </div>
+            <div>
+              <h2>Payment History</h2>
+              <p>
+                {student?.first_name} {student?.last_name}
+              </p>
+            </div>
+          </div>
+          <button onClick={onClose} className="close-btn">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="modal-body">
+          {loading ? (
+            <div className="loading-state">
+              <Loader size={32} className="spinner" />
+              <p>Loading payment history...</p>
+            </div>
+          ) : payments.length === 0 ? (
+            <div className="empty-state">
+              <CreditCard size={32} />
+              <p>No payment records found</p>
+            </div>
+          ) : (
+            <div className="payment-history-list">
+              {payments.map((payment) => (
+                <div key={payment.id} className="payment-history-item">
+                  <div className="payment-date">
+                    <Calendar size={14} />
+                    <span>{payment.date}</span>
+                  </div>
+                  <div className="payment-amount">
+                    <strong>{payment.amount_paid.toLocaleString()} MAD</strong>
+                  </div>
+                  <div className="payment-method">
+                    <span
+                      className={`method-badge ${payment.method?.toLowerCase().replace(' ', '-') || 'cash'}`}
+                    >
+                      {payment.method || 'Cash'}
+                    </span>
+                  </div>
+                  <div className="payment-status">
+                    <StatusBadge status={payment.status} />
+                  </div>
+                  {payment.notes && <div className="payment-notes">{payment.notes}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="modal-footer">
+          <button onClick={onClose} className="btn-cancel">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 /* ─────────────── Main Component ─────────────── */
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -642,6 +870,7 @@ const Students = () => {
       setLoading(true);
       const response = await axios.get('/students');
       if (response.data.success) {
+        // The backend now returns total_paid and remaining_balance
         setStudents(response.data.data);
       }
     } catch (error) {
@@ -874,8 +1103,11 @@ const Students = () => {
   // Calculate KPIs
   const total = students.length;
   const completed = students.filter((s) => s.payment_status === 'Complete').length;
-  const revenue = students.reduce((acc, s) => acc + Number(s.initial_payment || 0), 0);
-
+  const revenue = students.reduce((acc, student) => {
+    // Make sure to convert to number and handle null/undefined
+    const paid = Number(student.total_paid) || Number(student.initial_payment) || 0;
+    return acc + paid;
+  }, 0);
   const UsersIcon = () => (
     <svg
       width="28"
@@ -892,6 +1124,42 @@ const Students = () => {
     </svg>
   );
 
+  const [paymentStudent, setPaymentStudent] = useState(null);
+  const [historyStudent, setHistoryStudent] = useState(null);
+  // Add payment to student
+  // In handleAddPayment function
+  const handleAddPayment = async (paymentData) => {
+    setIsSaving(true);
+    try {
+      console.log('Sending payment data:', paymentData);
+
+      const response = await axios.post(`/students/${paymentData.student_id}/add-payment`, {
+        amount: paymentData.amount,
+        method: paymentData.method,
+        notes: paymentData.notes,
+      });
+
+      console.log('Payment response:', response.data);
+
+      if (response.data.success) {
+        await fetchStudents();
+        window.dispatchEvent(new CustomEvent('payment-added'));
+        addNotification(
+          'Payment Added',
+          `Payment of ${paymentData.amount} MAD received`,
+          'payment',
+        );
+        showToast('Payment added successfully');
+        setPaymentStudent(null);
+      }
+    } catch (error) {
+      console.error('Failed to add payment:', error);
+      console.error('Error response:', error.response?.data);
+      showToast(error.response?.data?.message || 'Failed to add payment', 'error');
+    } finally {
+      setIsSaving(false);
+    }
+  };
   // Loading state
   if (loading) {
     return (
@@ -906,6 +1174,20 @@ const Students = () => {
 
   return (
     <div className="students-page">
+      {paymentStudent && (
+        <AddPaymentModal
+          student={paymentStudent}
+          onClose={() => setPaymentStudent(null)}
+          onSave={handleAddPayment}
+          isSaving={isSaving}
+        />
+      )}
+
+      {/* Payment History Modal */}
+      {historyStudent && (
+        <PaymentHistoryModal student={historyStudent} onClose={() => setHistoryStudent(null)} />
+      )}
+
       {/* Toast Notification */}
       {toast && (
         <div className={`toast-notification toast-${toast.type}`}>
@@ -1037,6 +1319,8 @@ const Students = () => {
                 onDelete={(s) => setDeleteTarget(s)}
                 onPrint={handlePrintReceipt}
                 onView={(s) => setDetailStudent(s)}
+                onAddPayment={(s) => setPaymentStudent(s)}
+                onViewHistory={(s) => setHistoryStudent(s)}
               />
             ))
           )}
@@ -1117,8 +1401,25 @@ const Students = () => {
                           >
                             <Eye size={14} />
                           </button>
+                          {/* Add Payment Button - only show if not fully paid */}
+                          {student.payment_status !== 'Complete' && (
+                            <button
+                              className="action-btn payment"
+                              onClick={() => setPaymentStudent(student)}
+                              title="Add Payment"
+                            >
+                              <CreditCard size={14} />
+                            </button>
+                          )}
                           <button
-                            className="action-btn"
+                            className="action-btn history"
+                            onClick={() => setHistoryStudent(student)}
+                            title="Payment History"
+                          >
+                            <History size={14} />
+                          </button>
+                          <button
+                            className="action-btn edit"
                             onClick={() => {
                               setEditStudent(student);
                               setModal('edit');
@@ -1128,14 +1429,14 @@ const Students = () => {
                             <Pencil size={14} />
                           </button>
                           <button
-                            className="action-btn"
+                            className="action-btn print"
                             onClick={() => handlePrintReceipt(student)}
                             title="Print Receipt"
                           >
                             <Printer size={14} />
                           </button>
                           <button
-                            className="action-btn"
+                            className="action-btn delete"
                             onClick={() => setDeleteTarget(student)}
                             title="Delete"
                           >

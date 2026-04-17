@@ -341,18 +341,26 @@ const Dashboard = () => {
           ? ((monthlyRevenue - previousMonthlyRevenue) / previousMonthlyRevenue) * 100
           : 0;
 
-      // Pending payments (overdue or pending)
-      const pendingPayments = payments
-        .filter((p) => {
-          // Include payments that are not fully paid
-          const isPending =
-            p.status === 'Pending' || p.status === 'Overdue' || p.status === 'Partial';
-          const hasRemaining = (Number(p.amount_remaining) || 0) > 0;
-          // Exclude expenses (Maintenance and Incident)
-          const isNotExpense = !['Maintenance', 'Incident'].includes(p.type);
-          return isPending && hasRemaining && isNotExpense;
-        })
-        .reduce((sum, p) => sum + (Number(p.amount_remaining) || 0), 0);
+      let pendingPayments = 0;
+
+      // Calculate from students table (more reliable)
+      students.forEach((student) => {
+        const totalPrice = Number(student.total_price) || 0;
+
+        // Get all payments for this student from the payments array
+        const studentPayments = payments.filter(
+          (p) => p.student_id === student.id && p.type !== 'Maintenance' && p.type !== 'Incident',
+        );
+        const totalPaid = studentPayments.reduce((sum, p) => sum + (Number(p.amount_paid) || 0), 0);
+        const remaining = totalPrice - totalPaid;
+
+        if (remaining > 0) {
+          pendingPayments += remaining;
+        }
+      });
+      const finalPendingPayments = pendingPayments;
+
+      console.log('Pending payments (from students):', finalPendingPayments);
 
       // Collection rate
       const totalBilled = payments.reduce((sum, p) => sum + (Number(p.amount_total) || 0), 0);
@@ -529,7 +537,18 @@ const Dashboard = () => {
       setIsRefreshing(false);
     }
   }, []);
+  useEffect(() => {
+    const handlePaymentAdded = () => {
+      fetchDashboardData();
+      showToast('Payment recorded, dashboard updated', 'success');
+    };
 
+    window.addEventListener('payment-added', handlePaymentAdded);
+
+    return () => {
+      window.removeEventListener('payment-added', handlePaymentAdded);
+    };
+  }, [fetchDashboardData]);
   // Initial fetch
   useEffect(() => {
     fetchDashboardData();
