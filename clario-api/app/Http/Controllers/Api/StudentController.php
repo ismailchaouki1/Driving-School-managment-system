@@ -21,7 +21,12 @@ class StudentController extends Controller
         try {
             // ✅ USE ELOQUENT MODEL, NOT DB FACADE
             $students = Student::orderBy('created_at', 'desc')->get();
-
+            $studentsWithPayments = $students->map(function($student) {
+            $totalPaid = $student->payments()->sum('amount_paid');
+            $student->total_paid = $totalPaid;
+            $student->remaining_balance = $student->total_price - $totalPaid;
+            return $student;
+        });
             return response()->json([
                 'success' => true,
                 'data' => $students,
@@ -50,12 +55,23 @@ class StudentController extends Controller
             'address' => 'nullable|string',
             'type' => 'required|string',
             'initial_payment' => 'nullable|numeric|min:0',
-            'total_price' => 'nullable|numeric|min:0',
-            'payment_status' => 'required|in:Complete,Partial,Pending',
+            'total_price' => 'required|numeric|min:0',
             'registration_date' => 'required|date',
             'parent_name' => 'nullable|string|max:255',
             'emergency_contact' => 'nullable|string|max:20',
         ]);
+
+        // Calculate payment status based on initial payment
+        $initialPayment = $validated['initial_payment'] ?? 0;
+        $totalPrice = $validated['total_price'];
+
+        if ($initialPayment >= $totalPrice) {
+            $validated['payment_status'] = 'Complete';
+        } elseif ($initialPayment > 0) {
+            $validated['payment_status'] = 'Partial';
+        } else {
+            $validated['payment_status'] = 'Pending';
+        }
 
         // MANUALLY SET user_id - IMPORTANT!
         $validated['user_id'] = $request->user()->id;
@@ -63,12 +79,14 @@ class StudentController extends Controller
         $student = Student::create($validated);
 
         // Create payment record if initial payment > 0
-        if (($validated['initial_payment'] ?? 0) > 0) {
-            $reference = 'PAY-' . date('Y') . '-' . str_pad(DB::table('payments')->count() + 1, 3, '0', STR_PAD_LEFT);
+        if ($initialPayment > 0) {
+            $reference = 'PAY-' . date('Y') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
 
-            DB::table('payments')->insert([
+            $paymentStatus = $initialPayment >= $totalPrice ? 'Paid' : 'Partial';
+
+            Payment::create([
                 'reference' => $reference,
-                'user_id' => $request->user()->id, // MANUALLY SET user_id
+                'user_id' => $request->user()->id,
                 'student_id' => $student->id,
                 'student_name' => $student->first_name . ' ' . $student->last_name,
                 'student_cin' => $student->cin,
@@ -76,11 +94,11 @@ class StudentController extends Controller
                 'student_email' => $student->email,
                 'category' => $student->type,
                 'payment_category' => 'registration',
-                'amount_total' => $validated['total_price'] ?? 0,
-                'amount_paid' => $validated['initial_payment'],
-                'amount_remaining' => ($validated['total_price'] ?? 0) - $validated['initial_payment'],
-                'status' => $validated['initial_payment'] >= ($validated['total_price'] ?? 0) ? 'Paid' : 'Partial',
-                'method' => 'Cash',
+                'amount_total' => $totalPrice,
+                'amount_paid' => $initialPayment,
+                'amount_remaining' => $totalPrice - $initialPayment,
+                'status' => $paymentStatus,
+                'method' => $request->method ?? 'Cash',
                 'type' => 'Registration',
                 'date' => now()->toDateString(),
                 'due_date' => now()->addMonths(3)->toDateString(),
@@ -91,6 +109,10 @@ class StudentController extends Controller
                 'updated_at' => now(),
             ]);
         }
+
+        // Add payment totals to response
+        $student->total_paid = $initialPayment;
+        $student->remaining_balance = $totalPrice - $initialPayment;
 
         return response()->json([
             'success' => true,
@@ -107,20 +129,24 @@ class StudentController extends Controller
 }
 
     public function show($id)
-    {
-        try {
-            $student = Student::findOrFail($id);
-            return response()->json([
-                'success' => true,
-                'data' => $student
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Student not found'
-            ], 404);
-        }
+{
+    try {
+        $student = Student::findOrFail($id);
+        $totalPaid = $student->payments()->sum('amount_paid');
+        $student->total_paid = $totalPaid;
+        $student->remaining_balance = $student->total_price - $totalPaid;
+
+        return response()->json([
+            'success' => true,
+            'data' => $student
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Student not found'
+        ], 404);
     }
+}
 
     public function update(Request $request, $id)
     {
@@ -213,6 +239,148 @@ public function printReceipt($id)
         return response()->json([
             'success' => false,
             'message' => 'Failed to generate receipt: ' . $e->getMessage()
+        ], 500);
+    }
+}
+public function addPayment(Request $request, $id)
+{
+    try {
+        $student = Student::findOrFail($id);
+
+        // Verify ownership
+        if ($student->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
+        $request->validate([
+            'amount' => 'required|numeric|min:0.01',
+            'method' => 'required|string|in:Cash,Bank Transfer,Card,Cheque,Online',
+            'notes' => 'nullable|string',
+        ]);
+
+        $amount = $request->amount;
+        $totalPaidSoFar = $student->payments()->sum('amount_paid');
+        $remainingBalance = $student->total_price - $totalPaidSoFar;
+
+        if ($amount > $remainingBalance) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Amount exceeds remaining balance. Remaining: ' . number_format($remainingBalance, 2) . ' MAD'
+            ], 422);
+        }
+
+        // Calculate new total paid
+        $newTotalPaid = $totalPaidSoFar + $amount;
+
+        // Determine payment status
+        if ($newTotalPaid >= $student->total_price) {
+            $paymentStatus = 'Paid';
+            $student->payment_status = 'Complete';
+        } elseif ($newTotalPaid > 0) {
+            $paymentStatus = 'Partial';
+            $student->payment_status = 'Partial';
+        } else {
+            $paymentStatus = 'Pending';
+        }
+
+        // Generate unique reference
+        $reference = 'PAY-' . date('Y') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+
+        // Create payment record
+        $payment = Payment::create([
+            'reference' => $reference,
+            'user_id' => $request->user()->id,
+            'student_id' => $student->id,
+            'student_name' => $student->first_name . ' ' . $student->last_name,
+            'student_cin' => $student->cin,
+            'student_phone' => $student->phone,
+            'student_email' => $student->email,
+            'category' => $student->type,
+            'payment_category' => 'registration',
+            'amount_total' => $student->total_price,
+            'amount_paid' => $amount,
+            'amount_remaining' => $remainingBalance - $amount,
+            'status' => $paymentStatus,
+            'method' => $request->method,
+            'type' => 'Registration',
+            'date' => now()->toDateString(),
+            'due_date' => $student->registration_date,
+            'instructor' => $request->instructor ?? 'System',
+            'notes' => $request->notes ?? 'Additional registration payment',
+            'receipt_number' => 'RCP-' . str_pad($student->id, 6, '0', STR_PAD_LEFT) . '-' . time(),
+        ]);
+
+        $student->save();
+
+        // Get updated totals
+        $newTotalPaid = $student->payments()->sum('amount_paid');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment added successfully',
+            'data' => [
+                'payment' => $payment,
+                'student' => [
+                    'id' => $student->id,
+                    'name' => $student->first_name . ' ' . $student->last_name,
+                    'total_price' => $student->total_price,
+                    'total_paid' => $newTotalPaid,
+                    'remaining_balance' => $student->total_price - $newTotalPaid,
+                    'payment_status' => $student->payment_status,
+                ]
+            ]
+        ], 201);
+
+    } catch (\Exception $e) {
+        Log::error('Failed to add payment: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to add payment: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+/**
+ * Get payment history for a student
+ */
+public function getPaymentHistory(Request $request, $id)
+{
+    try {
+        $student = Student::findOrFail($id);
+
+        // Verify ownership
+        if ($student->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
+        $payments = $student->payments()->orderBy('created_at', 'desc')->get();
+        $totalPaid = $student->payments()->sum('amount_paid');
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'student' => [
+                    'id' => $student->id,
+                    'name' => $student->first_name . ' ' . $student->last_name,
+                    'total_price' => $student->total_price,
+                    'total_paid' => $totalPaid,
+                    'remaining_balance' => $student->total_price - $totalPaid,
+                    'payment_status' => $student->payment_status,
+                ],
+                'payments' => $payments
+            ]
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to get payment history: ' . $e->getMessage()
         ], 500);
     }
 }

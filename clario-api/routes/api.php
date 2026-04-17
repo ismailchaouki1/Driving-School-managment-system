@@ -44,6 +44,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/students/export/excel', [StudentController::class, 'exportExcel']);
     Route::get('/students/export/pdf', [StudentController::class, 'exportPdf']);
     Route::get('/students/{student}/receipt', [StudentController::class, 'printReceipt']);
+    Route::post('/students/{student}/add-payment', [StudentController::class, 'addPayment']);
+Route::get('/students/{student}/payment-history', [StudentController::class, 'getPaymentHistory']);
 
     // INSTRUCTOR ROUTES
     Route::apiResource('instructors', InstructorController::class);

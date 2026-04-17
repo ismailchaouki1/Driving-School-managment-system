@@ -52,4 +52,28 @@ class Student extends Model
     {
         return $this->payments()->sum('amount_remaining');
     }
+    public function getRemainingBalanceAttribute()
+{
+    $totalPaid = $this->payments()->sum('amount_paid');
+    return max(0, $this->total_price - $totalPaid);
+}
+
+public function updatePaymentStatus()
+{
+    $remaining = $this->remaining_balance;
+
+    if ($remaining <= 0) {
+        $this->payment_status = 'Complete';
+    } elseif ($this->payments()->sum('amount_paid') > 0) {
+        $this->payment_status = 'Partial';
+    } else {
+        $this->payment_status = 'Pending';
+    }
+
+    $this->save();
+}
+public function getTotalPaidAttribute()
+{
+    return $this->payments()->sum('amount_paid');
+}
 }
