@@ -20,6 +20,7 @@ import ForgotPassword from '../Pages/auth/ForgotPassword';
 import ResetPassword from '../Pages/auth/ResetPassword';
 import Checkout from '../components/Checkout';
 import PaymentSuccess from '../Pages/PaymentSuccess';
+import NotFoundPage from '../Pages/NotFoundPage';
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -36,6 +37,7 @@ export default function AppRoutes() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="*" element={<NotFoundPage />} />
           <Route path="/system" element={<MainLayout />}>
             <Route index element={<Navigate to="/system/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
